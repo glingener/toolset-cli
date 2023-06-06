@@ -4,7 +4,7 @@ WP-CLI commands for Toolset plugins.
 
 ## Requirements
 
-- PHP 7.0 or higher
+- PHP 5.6 or higher
 - [Composer](https://getcomposer.org/) 1.x
 - Latest versions of [Toolset plugins](https://toolset.com)
 - [WP-CLI](https://wp-cli.org/)
@@ -25,7 +25,7 @@ WP-CLI commands for Toolset plugins.
    ```bash
    wp plugin activate toolset-cli
    ```
-   
+
 ## Documentation
 
 At the moment, four top-level commands are available. Feel free to explore
@@ -44,8 +44,8 @@ Please understand that this is _not_ an official part of the Toolset plugins,
 but rather a tool used internally within our company, which we decided to share
 with our more advanced clients and Toolset users.
 
-Therefore, the usual guarantees do not apply here, and support will be provided 
-exclusively through this GitHub repository. 
+Therefore, the usual guarantees do not apply here, and support will be provided
+exclusively through this GitHub repository.
 
 That being said, we are dedicated to keeping this tool up-to-date and grow
 its feature set.
@@ -55,7 +55,7 @@ You are very welcome to:
 - Report problems, including issues with documentation.
 - Send pull requests (we suggest reaching out to us first, if you want to
    contribute with a larger piece of code).
-  
+
 ## Credits
 
 Many thanks to [@baizmandesign](https://github.com/baizmandesign) for his contributions to this project.
