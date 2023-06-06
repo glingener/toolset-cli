@@ -42,20 +42,20 @@ class Import extends LayoutsCommand {
 
 		// Is the file empty?
 		if ( empty ( $import_filename ) ) {
-			$this->wp_cli()->error( __( 'You must specify a valid file to import.', 'toolset-cli' ) );
+			$this->wp_cli()->error( __('You must specify a valid file to import.', 'toolset-cli') );
 		}
 
 		// Does the import file exist?
 		if ( ! file_exists ( $import_filename ) ) {
-			$this->wp_cli()->error( sprintf ( __( '"%s" does not exist. Aborting.' ), $import_filename), 'toolset-cli' );
+			$this->wp_cli()->error(sprintf(__( '"%s" does not exist. Aborting.' ), $import_filename), 'toolset-cli');
 		}
 
 		// Returns filename extension without a period prefixed to it.
-		$import_filename_extension = pathinfo( $import_filename, PATHINFO_EXTENSION );
+		$import_filename_extension = pathinfo($import_filename, PATHINFO_EXTENSION);
 
 		// Does the file have a ".zip" extension?
 		if ( ! $import_filename_extension || strtolower ( $import_filename_extension ) != 'zip' ) {
-			$this->wp_cli()->error( sprintf ( __( '"%s" is not in ZIP format.'), $import_filename), 'toolset-cli' );
+			$this->wp_cli()->error(sprintf(__( '"%s" is not in ZIP format.'), $import_filename), 'toolset-cli');
 		}
 
 		// Load the import code from the Layouts plugin.
@@ -75,19 +75,19 @@ class Import extends LayoutsCommand {
 		}
 
 		// Returns filename without the path to the parent directory.
-		$import_filename_basename = pathinfo( $import_filename, PATHINFO_BASENAME );
+		$import_filename_basename = pathinfo($import_filename, PATHINFO_BASENAME);
 
 		// Create an array that holds the properties of the $_FILES array for compatibility with manage_manual_import() method.
 		$files = [] ;
 		$files['import-file']['name'] = $import_filename_basename ; // basename
 		$files['import-file']['tmp_name'] = $import_filename ; // full path
 
-		$import_succeeded = $layouts->import_layouts( $files, $import_args );
+		$import_succeeded = $layouts->import_layouts($files, $import_args);
 
 		if ( $import_succeeded ) {
-			$this->wp_cli()->success( sprintf ( __( 'The layouts were imported successfully from "%s."'), $import_filename ) , 'toolset-cli' );
+			$this->wp_cli()->success(sprintf(__( 'The layouts were imported successfully from "%s."'), $import_filename), 'toolset-cli');
 		} else {
-			$this->wp_cli()->error( __( 'There was an error importing the layouts.', 'toolset-cli' ) );
+			$this->wp_cli()->error( __('There was an error importing the layouts.', 'toolset-cli') );
 		}
 
 	}

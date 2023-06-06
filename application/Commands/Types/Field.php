@@ -49,20 +49,20 @@ class Field extends TypesCommand {
 		$field_type = Toolset_Field_Type_Definition_Factory::get_instance()
 			->load_field_type_definition( $parameters['type'] );
 		if ( ! $field_type ) {
-			$this->wp_cli()->error( __( 'Unrecognized field type.', 'toolset-cli' ) );
+			$this->wp_cli()->error( __('Unrecognized field type.', 'toolset-cli') );
 		}
 		$definition_factory = Toolset_Field_Definition_Factory::get_factory_by_domain( $parameters['domain'] );
 
 		switch ( $parameters['domain'] ) {
 			case Toolset_Element_Domain::TERMS:
 			case Toolset_Element_Domain::USERS:
-				$this->wp_cli()->error( __( 'Only the posts domain is supported at the moment.', 'toolset-cli' ) );
+				$this->wp_cli()->error( __('Only the posts domain is supported at the moment.', 'toolset-cli') );
 				return;
 			case Toolset_Element_Domain::POSTS:
 				$definition_class = Toolset_Field_Definition_Post::class;
 				break;
 			default:
-				$this->wp_cli()->error( __( 'Invalid or missing element domain.', 'toolset-cli' ) );
+				$this->wp_cli()->error( __('Invalid or missing element domain.', 'toolset-cli') );
 				return;
 		}
 
@@ -70,22 +70,18 @@ class Field extends TypesCommand {
 		// Workaround, as creating new fields is currently possible only from the legacy Types codebase.
 		$new_field_slug = $definition_factory->create_field_definition_for_existing_fields( 'wpcf-' . $field_slug );
 		if ( false === $new_field_slug ) {
-			$this->wp_cli()->error( __( 'Toolset reports an error when creating a new field definition.', 'toolset-cli' ) );
+			$this->wp_cli()->error( __('Toolset reports an error when creating a new field definition.', 'toolset-cli') );
 			return;
 		}
-		$this->wp_cli()->log( __( 'New field slug created: ', 'toolset-cli' ) . $new_field_slug );
+		$this->wp_cli()->log( __('New field slug created: ', 'toolset-cli') . $new_field_slug );
 
-		$field_definition = new $definition_class(
-			$field_type,
-			[
+		$field_definition = new $definition_class($field_type, [
 				'slug' => $parameters['slug'],
 				'id' => $parameters['slug'],
 				'type' => $field_type->get_slug(),
-				'name' => array_key_exists( 'name', $parameters ) ? $parameters['name'] : $parameters['slug'],
+				'name' => array_key_exists('name', $parameters) ? $parameters['name'] : $parameters['slug'],
 				'meta_type' => Toolset_Field_Utils::domain_to_legacy_meta_type( $parameters['domain'] ),
-			],
-			$definition_factory
-		);
+			], $definition_factory);
 
 		$definition_factory->update_definition( $field_definition );
 	}
@@ -108,23 +104,17 @@ class Field extends TypesCommand {
 	public function list_items( $args, $parameters ) {
 		$definition_factory = Toolset_Field_Definition_Factory::get_factory_by_domain( $parameters['domain'] );
 
-		$field_definitions = array_map(
-			static function ( Toolset_Field_Definition_Abstract $definition ) {
+		$field_definitions = array_map(static function ( Toolset_Field_Definition_Abstract $definition ) {
 				return [
 					'slug' => $definition->get_slug(),
 					'type' => $definition instanceof Toolset_Field_Definition ? $definition->get_type_slug() : 'n/a',
-					'groups' => implode( ', ', array_map(
-						static function ( Toolset_Field_Group $group ) {
+					'groups' => implode(', ', array_map(static function ( Toolset_Field_Group $group ) {
 							return $group->get_slug();
-						},
-						$definition->get_associated_groups()
-					) ),
+						}, $definition->get_associated_groups())),
 				];
-			},
-			$definition_factory->load_all_definitions()
-		);
+			}, $definition_factory->load_all_definitions());
 
-		$this->wp_cli()->log( format_items( 'table', $field_definitions, [ 'slug', 'type', 'groups' ] ) );
+		$this->wp_cli()->log( format_items('table', $field_definitions, [ 'slug', 'type', 'groups' ]) );
 	}
 
 }

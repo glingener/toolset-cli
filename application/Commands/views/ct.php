@@ -47,27 +47,27 @@ class CT extends Views_Commands {
 			'assignment_slug' => 'post',
 		);
 
-		$create_args = wp_parse_args( $assoc_args, $defaults );
+		$create_args = wp_parse_args($assoc_args, $defaults);
 
 		try {
 
 			$ct = WPV_Content_Template::create( $create_args['title'] );
 
 			if ( ! empty( $create_args['content'] ) ) {
-				$this->set_content( $ct->id, $create_args['content'] );
+				$this->set_content($ct->id, $create_args['content']);
 			}
 
 			if ( ! empty( $create_args['assignment_group'] ) && ! empty( $create_args['assignment_slug'] ) ) {
-				$this->set_assignment( $ct->id, $create_args['assignment_group'], $create_args['assignment_slug'] );
+				$this->set_assignment($ct->id, $create_args['assignment_group'], $create_args['assignment_slug']);
 			}
 
 			if ( $ct->id !== null ) {
-				$this->output_result( $ct->id, $create_args, 'Content Template created' );
+				$this->output_result($ct->id, $create_args, 'Content Template created');
 			} else {
-				\WP_CLI::error( __( 'Could not create content template.', 'toolset-cli' ) );
+				\WP_CLI::error( __('Could not create content template.', 'toolset-cli') );
 			}
 		} catch ( \Exception $e ) {
-			\WP_CLI::error( __( 'There was an error while creating new Views instance.', 'toolset-cli' ) );
+			\WP_CLI::error( __('There was an error while creating new Views instance.', 'toolset-cli') );
 		}
 	}
 
@@ -103,23 +103,23 @@ class CT extends Views_Commands {
 			'output_id' => false,
 		);
 
-		$duplicate_args = wp_parse_args( $assoc_args, $defaults );
+		$duplicate_args = wp_parse_args($assoc_args, $defaults);
 
 		if ( ! is_numeric( $id ) ) {
-			\WP_CLI::error( __( 'Please provide a CT id', 'toolset-cli' ) );
+			\WP_CLI::error( __('Please provide a CT id', 'toolset-cli') );
 		}
 
 		try {
 			$ct = WPV_Content_Template::get_instance( $id );
-			$duplicate_ct = $ct->duplicate( $duplicate_args['title'], true );
+			$duplicate_ct = $ct->duplicate($duplicate_args['title'], true);
 
 			if ( $duplicate_ct !== null && $duplicate_ct->id !== null ) {
-				$this->output_result( $duplicate_ct->id, $duplicate_args, 'Content Template duplicated' );
+				$this->output_result($duplicate_ct->id, $duplicate_args, 'Content Template duplicated');
 			} else {
-				\WP_CLI::error( __( 'Could not duplicate content template.', 'toolset-cli' ) );
+				\WP_CLI::error( __('Could not duplicate content template.', 'toolset-cli') );
 			}
 		} catch ( \Exception $e ) {
-			\WP_CLI::error( __( 'There was an error while creating new CT instance.', 'toolset-cli' ) );
+			\WP_CLI::error( __('There was an error while creating new CT instance.', 'toolset-cli') );
 		}
 	}
 
@@ -152,18 +152,18 @@ class CT extends Views_Commands {
 			'content' => \OTGS\Toolset\CLI\get_random_string(),
 		);
 
-		$content_args = wp_parse_args( $assoc_args, $defaults );
+		$content_args = wp_parse_args($assoc_args, $defaults);
 
 		if ( ! is_numeric( $id ) ) {
-			\WP_CLI::error( __( 'Please provide a CT id', 'toolset-cli' ) );
+			\WP_CLI::error( __('Please provide a CT id', 'toolset-cli') );
 		}
 
-		$result = $this->set_content( $id, $content_args['content'] );
+		$result = $this->set_content($id, $content_args['content']);
 
 		if ( $result !== 0 ) {
-			\WP_CLI::success( __( 'Change CT content.', 'toolset-cli' ) );
+			\WP_CLI::success( __('Change CT content.', 'toolset-cli') );
 		} else {
-			\WP_CLI::error( __( 'Could not change CT content.', 'toolset-cli' ) );
+			\WP_CLI::error( __('Could not change CT content.', 'toolset-cli') );
 		}
 	}
 
@@ -196,27 +196,27 @@ class CT extends Views_Commands {
 			'posts_ids' => - 1,
 		);
 
-		$bind_args = wp_parse_args( $assoc_args, $defaults );
+		$bind_args = wp_parse_args($assoc_args, $defaults);
 
 		if ( ! is_numeric( $id ) ) {
-			\WP_CLI::error( __( 'Please provide a CT id', 'toolset-cli' ) );
+			\WP_CLI::error( __('Please provide a CT id', 'toolset-cli') );
 		}
 
 		if ( $bind_args['posts_ids'] === - 1 ) {
-			\WP_CLI::error( __( 'Please provide a post id using --posts_ids arg', 'toolset-cli' ) );
+			\WP_CLI::error( __('Please provide a post id using --posts_ids arg', 'toolset-cli') );
 		}
 
 		try {
 			$ct = WPV_Content_Template::get_instance( $id );
-			$result = $ct->bind_posts( explode( ',', $bind_args['posts_ids'] ) );
+			$result = $ct->bind_posts( explode(',', $bind_args['posts_ids']) );
 
 			if ( $result !== false ) {
-				\WP_CLI::success( __( 'bind-ed posts to content template.', 'toolset-cli' ) );
+				\WP_CLI::success( __('bind-ed posts to content template.', 'toolset-cli') );
 			} else {
-				\WP_CLI::error( __( 'could not bind posts to content template.', 'toolset-cli' ) );
+				\WP_CLI::error( __('could not bind posts to content template.', 'toolset-cli') );
 			}
 		} catch ( \Exception $e ) {
-			\WP_CLI::error( __( 'There was an error while creating new CT instance.', 'toolset-cli' ) );
+			\WP_CLI::error( __('There was an error while creating new CT instance.', 'toolset-cli') );
 		}
 	}
 
@@ -253,18 +253,18 @@ class CT extends Views_Commands {
 			'assignment_group' => null,
 		);
 
-		$assign_args = wp_parse_args( $assoc_args, $defaults );
+		$assign_args = wp_parse_args($assoc_args, $defaults);
 
 		if ( ! is_numeric( $id ) ) {
-			\WP_CLI::error( __( 'Please provide a CT id', 'toolset-cli' ) );
+			\WP_CLI::error( __('Please provide a CT id', 'toolset-cli') );
 		}
 
-		$result = $this->set_assignment( $id, $assign_args['assignment_group'], $assign_args['assignment_slug'] );
+		$result = $this->set_assignment($id, $assign_args['assignment_group'], $assign_args['assignment_slug']);
 
 		if ( $result !== false ) {
-			\WP_CLI::success( __( 'assigned content template to resource.', 'toolset-cli' ) );
+			\WP_CLI::success( __('assigned content template to resource.', 'toolset-cli') );
 		} else {
-			\WP_CLI::error( __( 'could not assign content template to the resource.', 'toolset-cli' ) );
+			\WP_CLI::error( __('could not assign content template to the resource.', 'toolset-cli') );
 		}
 
 	}
@@ -281,9 +281,9 @@ class CT extends Views_Commands {
 	 */
 	protected function set_assignment( $ct_id, $assignment_group, $assignment_slug ) {
 
-		$wpv_option = get_option( WPV_Settings::OPTION_NAME, array() );
+		$wpv_option = get_option(WPV_Settings::OPTION_NAME, array());
 
-		return update_option( WPV_Settings::OPTION_NAME, array_merge( $wpv_option, array( $this->format_assignment( $assignment_group, $assignment_slug ) => $ct_id ) ) );
+		return update_option(WPV_Settings::OPTION_NAME, array_merge($wpv_option, array( $this->format_assignment($assignment_group, $assignment_slug) => $ct_id )));
 	}
 
 
@@ -308,11 +308,11 @@ class CT extends Views_Commands {
 				$prefix = WPV_Settings::TAXONOMY_ARCHIVES_CT_ASSIGNMENT_PREFIX;
 				break;
 			default:
-				\WP_CLI::error( sprintf( __( 'Unsupported CT assignment type %s', 'toolset-cli' ), ucfirst( $assignment_group ) ) );
+				\WP_CLI::error( sprintf(__('Unsupported CT assignment type %s', 'toolset-cli'), ucfirst( $assignment_group )) );
 				break;
 		}
 
-		return sprintf( '%s%s', $prefix, $assignment_slug );
+		return sprintf('%s%s', $prefix, $assignment_slug);
 	}
 
 

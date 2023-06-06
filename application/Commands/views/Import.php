@@ -57,33 +57,24 @@ class Import extends Views_Commands {
 		list( $import_filename ) = $args;
 
 		if ( empty ( $import_filename ) ) {
-			$this->wp_cli()->error(
-				__( 'You must specify a valid file to import. Aborting.', 'toolset-cli' ), true
-			);
+			$this->wp_cli()->error(__('You must specify a valid file to import. Aborting.', 'toolset-cli'), true);
 			return;
 		}
 
 		if ( ! is_file( $import_filename ) ) {
-			$this->wp_cli()->error( sprintf(
-				__( '"%s" does not exist. Aborting.', 'toolset-cli' ), $import_filename
-			), true );
+			$this->wp_cli()->error(sprintf(__('"%s" does not exist. Aborting.', 'toolset-cli'), $import_filename), true);
 			return;
 		}
 
 		// Returns filename extension without a period prefixed to it.
-		$import_filename_extension = strtolower( pathinfo( $import_filename, PATHINFO_EXTENSION ) );
-		$import_filename_basename = pathinfo( $import_filename, PATHINFO_BASENAME );
+		$import_filename_extension = strtolower( pathinfo($import_filename, PATHINFO_EXTENSION) );
+		$import_filename_basename = pathinfo($import_filename, PATHINFO_BASENAME);
 
 		if (
 			! $import_filename_extension
-			|| ! in_array( $import_filename_extension, self::VALID_EXTENSIONS )
+			|| ! in_array($import_filename_extension, self::VALID_EXTENSIONS)
 		) {
-			$this->wp_cli()->error( sprintf(
-				__( '"%1$s" is in an invalid format%3$s. The valid formats are: %2$s. Aborting.', 'toolset-cli' ),
-				$import_filename_basename,
-				implode( ', ', self::VALID_EXTENSIONS ),
-				$import_filename_extension !== '' ? ' ("' . $import_filename_extension . '")' : ''
-			), true );
+			$this->wp_cli()->error(sprintf(__('"%1$s" is in an invalid format%3$s. The valid formats are: %2$s. Aborting.', 'toolset-cli'), $import_filename_basename, implode(', ', self::VALID_EXTENSIONS), $import_filename_extension !== '' ? ' ("' . $import_filename_extension . '")' : ''), true);
 			return;
 		}
 
@@ -105,17 +96,12 @@ class Import extends Views_Commands {
 		$import_status = wpv_api_import_from_file( $import_args );
 
 		if ( $import_status instanceof WP_Error || ! $import_status ) {
-			$this->wp_cli()->error( sprintf(
-				__( 'There was an error importing the views: "%s"', 'toolset-cli' ),
-				$import_status instanceof WP_Error ? $import_status->get_error_message() : 'unknown error'
-			), true );
+			$this->wp_cli()->error(sprintf(__('There was an error importing the views: "%s"', 'toolset-cli'), $import_status instanceof WP_Error ? $import_status->get_error_message() : 'unknown error'), true);
 
 			return;
 		}
 
-		$this->wp_cli()->success( sprintf(
-			__( 'The views were imported successfully from "%s."', 'toolset-cli' ), $import_filename
-		) );
+		$this->wp_cli()->success( sprintf(__('The views were imported successfully from "%s."', 'toolset-cli'), $import_filename) );
 	}
 
 }

@@ -28,11 +28,11 @@ class Relationship extends TypesCommand {
 		$defaults = array(
 			'format' => 'table',
 		);
-		$assoc_args = wp_parse_args( $assoc_args, $defaults );
+		$assoc_args = wp_parse_args($assoc_args, $defaults);
 
 		$items = $this->get_items();
 
-		\WP_CLI\Utils\format_items( $assoc_args['format'], $items, $this->get_columns() );
+		\WP_CLI\Utils\format_items($assoc_args['format'], $items, $this->get_columns());
 	}
 
 	/**
@@ -57,7 +57,7 @@ class Relationship extends TypesCommand {
 				'second_post_type' => $definition->get_parent_type()->get_types()[0],
 				'limits' => $first_limit . '..' . $second_limit,
 				'origin' => $definition->get_origin()->get_origin_keyword(),
-				'active' => $definition->is_active() ? __( 'Yes', 'toolset-cli' ) : __( 'No', 'toolset-cli' ),
+				'active' => $definition->is_active() ? __('Yes', 'toolset-cli') : __('No', 'toolset-cli'),
 			);
 		}
 
@@ -118,7 +118,7 @@ class Relationship extends TypesCommand {
 			'slug' => 'post-page',
 			'cardinality' => '*..*',
 		);
-		$relationship_args = wp_parse_args( $assoc_args, $defaults );
+		$relationship_args = wp_parse_args($assoc_args, $defaults);
 
 		$definition_extra = array(
 			'name' => $relationship_args['slug'],
@@ -126,8 +126,8 @@ class Relationship extends TypesCommand {
 			'cardinality' => $relationship_args['cardinality'],
 		);
 
-		$definition = $this->create_item( $relationship_args['slug'], $relationship_args['first'], $relationship_args['second'], $definition_extra );
-		\WP_CLI::success( __( 'Created relationship.', 'toolset-cli' ) );
+		$definition = $this->create_item($relationship_args['slug'], $relationship_args['first'], $relationship_args['second'], $definition_extra);
+		\WP_CLI::success( __('Created relationship.', 'toolset-cli') );
 	}
 
 	/**
@@ -151,9 +151,9 @@ class Relationship extends TypesCommand {
 		$defaults = array(
 			'count' => 10,
 		);
-		$assoc_args = wp_parse_args( $assoc_args, $defaults );
+		$assoc_args = wp_parse_args($assoc_args, $defaults);
 
-		$progress = \WP_CLI\Utils\make_progress_bar( __( 'Generating relationships', 'toolset-cli' ), $assoc_args['count'] );
+		$progress = \WP_CLI\Utils\make_progress_bar(__('Generating relationships', 'toolset-cli'), $assoc_args['count']);
 		for ( $i = 0; $i < $assoc_args['count']; $i ++ ) {
 			$this->create_item();
 			$progress->tick();
@@ -180,16 +180,16 @@ class Relationship extends TypesCommand {
 			$slug = \OTGS\Toolset\CLI\get_random_string();
 		}
 		if ( $this->get_post_type( $first_post_type_slug ) == null ) {
-			\WP_CLI::error( __( 'First post type does not exist.', 'toolset-cli' ) );
+			\WP_CLI::error( __('First post type does not exist.', 'toolset-cli') );
 		}
 		if ( $this->get_post_type( $second_post_type_slug ) == null ) {
-			\WP_CLI::error( __( 'Second post type does not exist.', 'toolset-cli' ) );
+			\WP_CLI::error( __('Second post type does not exist.', 'toolset-cli') );
 		}
 
 		$definition_repository = \Toolset_Relationship_Definition_Repository::get_instance();
 		$parent_post_type = \Toolset_Relationship_Element_Type::build_for_post_type( $first_post_type_slug );
 		$child_post_type = \Toolset_Relationship_Element_Type::build_for_post_type( $second_post_type_slug );
-		$definition = $definition_repository->create_definition( $slug, $parent_post_type, $child_post_type );
+		$definition = $definition_repository->create_definition($slug, $parent_post_type, $child_post_type);
 
 		if ( isset( $extra['name'] ) ) {
 			$definition->set_display_name( $extra['name'] );
@@ -201,19 +201,19 @@ class Relationship extends TypesCommand {
 
 		if ( isset( $extra['cardinality'] ) ) {
 
-			$cardinality_parts = explode( '..', $extra['cardinality'] );
+			$cardinality_parts = explode('..', $extra['cardinality']);
 
 			if ( 2 === count( $cardinality_parts ) ) {
 				$extra['cardinality'] = '0..' . $cardinality_parts[0] . ':' . '0..' . $cardinality_parts[1];
 			} else {
-				\WP_CLI::error( __( 'Please enter a valid cardinality: *..*, <number>..*, <number>..<number>.', 'toolset-cli' ) );
+				\WP_CLI::error( __('Please enter a valid cardinality: *..*, <number>..*, <number>..<number>.', 'toolset-cli') );
 			}
 
 			try {
 				$cardinality = \Toolset_Relationship_Cardinality::from_string( $extra['cardinality'] );
-				$definition->set_cardinality( new \Toolset_Relationship_Cardinality( $cardinality->get_parent(), $cardinality->get_child() ) );
+				$definition->set_cardinality( new \Toolset_Relationship_Cardinality($cardinality->get_parent(), $cardinality->get_child()) );
 			} catch ( \InvalidArgumentException $e ) {
-				\WP_CLI::error( __( 'Please enter a valid cardinality: *..*, <number>..*, <number>..<number>.', 'toolset-cli' ) );
+				\WP_CLI::error( __('Please enter a valid cardinality: *..*, <number>..*, <number>..<number>.', 'toolset-cli') );
 			}
 		}
 
@@ -246,20 +246,20 @@ class Relationship extends TypesCommand {
 		$defaults = array(
 			'cleanup' => true,
 		);
-		$delete_args = wp_parse_args( $assoc_args, $defaults );
+		$delete_args = wp_parse_args($assoc_args, $defaults);
 
 		$definition_repository = \Toolset_Relationship_Definition_Repository::get_instance();
 		$definitions = $definition_repository->get_definitions();
 
 		if ( ! empty( $definitions ) ) {
-			$progress = \WP_CLI\Utils\make_progress_bar( __( 'Deleting relationships', 'toolset-cli' ), count( $definitions ) );
+			$progress = \WP_CLI\Utils\make_progress_bar(__('Deleting relationships', 'toolset-cli'), count( $definitions ));
 			foreach ( $definitions as $definition ) {
-				$this->delete_item( $definition->get_slug(), $delete_args['cleanup'] );
+				$this->delete_item($definition->get_slug(), $delete_args['cleanup']);
 				$progress->tick();
 			}
 			$progress->finish();
 		} else {
-			\WP_CLI::warning( __( 'There are no relationships to delete.', 'toolset-cli' ) );
+			\WP_CLI::warning( __('There are no relationships to delete.', 'toolset-cli') );
 		}
 	}
 
@@ -288,20 +288,20 @@ class Relationship extends TypesCommand {
 		$defaults = array(
 			'cleanup' => true,
 		);
-		$delete_args = wp_parse_args( $assoc_args, $defaults );
+		$delete_args = wp_parse_args($assoc_args, $defaults);
 
 		list( $slug ) = $args;
 
 		if ( empty( $slug ) ) {
-			\WP_CLI::error( __( 'You must specify a relationship slug.', 'toolset-cli' ) );
+			\WP_CLI::error( __('You must specify a relationship slug.', 'toolset-cli') );
 		}
 
-		$delete_result = $this->delete_item( $slug, $delete_args['cleanup'] );
+		$delete_result = $this->delete_item($slug, $delete_args['cleanup']);
 
 		if ( $delete_result ) {
-			\WP_CLI::success( __( 'Deleted relationship.', 'toolset-cli' ) );
+			\WP_CLI::success( __('Deleted relationship.', 'toolset-cli') );
 		} else {
-			\WP_CLI::error( __( 'Relationship does not exist.', 'toolset-cli' ) );
+			\WP_CLI::error( __('Relationship does not exist.', 'toolset-cli') );
 		}
 	}
 
@@ -324,7 +324,7 @@ class Relationship extends TypesCommand {
 			$do_cleanup = $do_cleanup === 'false' ? false : true;
 		}
 
-		$definition_repository->remove_definition( $definition, $do_cleanup );
+		$definition_repository->remove_definition($definition, $do_cleanup);
 
 		return true;
 	}

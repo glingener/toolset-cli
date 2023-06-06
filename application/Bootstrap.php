@@ -101,7 +101,7 @@ class Bootstrap {
 				if ( $command_name !== $plugin_name ) {
 					$command_name = $plugin_name . ' ' . $command_name;
 				}
-				$this->add_command( $command_name, $handler_class_name, $plugin_name );
+				$this->add_command($command_name, $handler_class_name, $plugin_name);
 			}
 		}
 
@@ -119,20 +119,20 @@ class Bootstrap {
 	 * @noinspection PhpDocMissingThrowsInspection
 	 */
 	private function add_command( $command_name, $handler_class_name, $plugin_name ) {
-		WP_CLI::add_command( $command_name, $handler_class_name, [
+		WP_CLI::add_command($command_name, $handler_class_name, [
 			'before_invoke' => function () use ( $plugin_name ) {
 				if (
-					! in_array( $plugin_name, self::$non_plugin_commands, true )
+					! in_array($plugin_name, self::$non_plugin_commands, true)
 					&& ! $this->is_plugin_active( $plugin_name )
 				) {
 					WP_CLI::error( sprintf(
-						/* translators: Plugin name. */
-						__( '%s is not active.', 'toolset-cli' ),
-						ucfirst( $plugin_name )
-					) );
+         /* translators: Plugin name. */
+         __('%s is not active.', 'toolset-cli'),
+         ucfirst( $plugin_name )
+     ) );
 				}
 			},
-		] );
+		]);
 	}
 
 
@@ -146,13 +146,13 @@ class Bootstrap {
 	private function is_plugin_active( $plugin ) {
 		switch ( $plugin ) {
 			case 'types':
-				return ( apply_filters( 'types_is_active', false ) && $this->is_m2m_active() );
+				return ( apply_filters('types_is_active', false) && $this->is_m2m_active() );
 			case 'views':
 				return defined( 'WPV_VERSION' );
 			case 'wpml':
-				return ( apply_filters( 'toolset_is_wpml_active_and_configured', false ) );
+				return ( apply_filters('toolset_is_wpml_active_and_configured', false) );
 			case 'toolset':
-				return apply_filters( 'types_is_active', false ) || $this->is_plugin_active( 'views' );
+				return apply_filters('types_is_active', false) || $this->is_plugin_active( 'views' );
 			case 'layouts':
 				return defined( 'WPDDL_DEVELOPMENT' ) || defined( 'WPDDL_PRODUCTION' );
 			case 'csv':
@@ -170,15 +170,15 @@ class Bootstrap {
 	 * @noinspection PhpDocMissingThrowsInspection
 	 */
 	private function is_m2m_active() {
-		if ( ! apply_filters( 'toolset_is_m2m_enabled', false ) ) {
+		if ( ! apply_filters('toolset_is_m2m_enabled', false) ) {
 			/** @noinspection PhpUnhandledExceptionInspection */
-			WP_CLI::error( __( 'm2m is not active.', 'toolset-cli' ) );
+			WP_CLI::error( __('m2m is not active.', 'toolset-cli') );
 
 			return false;
 		}
-		if ( ! defined( 'TOOLSET_VERSION' ) || version_compare( TOOLSET_VERSION, '2.5.3' ) < 0 ) {
+		if ( ! defined( 'TOOLSET_VERSION' ) || version_compare(TOOLSET_VERSION, '2.5.3') < 0 ) {
 			/** @noinspection PhpUnhandledExceptionInspection */
-			WP_CLI::error( __( 'Toolset Common version is old, please update to the latest one.', 'toolset-cli' ) );
+			WP_CLI::error( __('Toolset Common version is old, please update to the latest one.', 'toolset-cli') );
 
 			return false;
 		}

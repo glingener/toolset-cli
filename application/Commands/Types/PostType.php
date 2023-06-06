@@ -40,11 +40,11 @@ class PostType extends TypesCommand {
 			'intermediary' => false,
 			'repeating_field_group' => false,
 		);
-		$assoc_args = wp_parse_args( $assoc_args, $defaults );
+		$assoc_args = wp_parse_args($assoc_args, $defaults);
 
-		$items = $this->get_items( $assoc_args['domain'], $assoc_args['intermediary'], $assoc_args['repeating_field_group'] );
+		$items = $this->get_items($assoc_args['domain'], $assoc_args['intermediary'], $assoc_args['repeating_field_group']);
 
-		\WP_CLI\Utils\format_items( $assoc_args['format'], $items, $this->get_columns() );
+		\WP_CLI\Utils\format_items($assoc_args['format'], $items, $this->get_columns());
 	}
 
 	/**
@@ -75,7 +75,7 @@ class PostType extends TypesCommand {
 				'slug' => $post_type->get_slug(),
 				'singular' => $post_type->get_label( \Toolset_Post_Type_Labels::SINGULAR_NAME ),
 				'plural' => $post_type->get_label( \Toolset_Post_Type_Labels::NAME ),
-				'active' => $post_type->is_registered() ? __( 'Yes', 'toolset-cli' ) : __( 'No', 'toolset-cli' ),
+				'active' => $post_type->is_registered() ? __('Yes', 'toolset-cli') : __('No', 'toolset-cli'),
 			);
 		}
 
@@ -143,7 +143,7 @@ class PostType extends TypesCommand {
 			'hierarchical' => 'false',
 			'publicly_queryable' => 'true'
 		);
-		$assoc_args = wp_parse_args( $assoc_args, $defaults );
+		$assoc_args = wp_parse_args($assoc_args, $defaults);
 
 		$post_type_options = array(
 			'editor' => $assoc_args['editor'],
@@ -152,12 +152,12 @@ class PostType extends TypesCommand {
 			'publicly_queryable' => $assoc_args['publicly_queryable'],
 		);
 
-		$post_type = $this->create_item( $assoc_args['slug'], $assoc_args['plural'], $assoc_args['singular'], $post_type_options );
+		$post_type = $this->create_item($assoc_args['slug'], $assoc_args['plural'], $assoc_args['singular'], $post_type_options);
 
 		if ( ! empty ( $post_type ) ) {
-			\WP_CLI::success( __( 'Created post type.', 'toolset-cli' ) );
+			\WP_CLI::success( __('Created post type.', 'toolset-cli') );
 		} else {
-			\WP_CLI::error( __( 'Could not create post type.', 'toolset-cli' ) );
+			\WP_CLI::error( __('Could not create post type.', 'toolset-cli') );
 		}
 	}
 
@@ -182,9 +182,9 @@ class PostType extends TypesCommand {
 		$defaults = array(
 			'count' => 10,
 		);
-		$assoc_args = wp_parse_args( $assoc_args, $defaults );
+		$assoc_args = wp_parse_args($assoc_args, $defaults);
 
-		$progress = \WP_CLI\Utils\make_progress_bar( __( 'Generating post types', 'toolset-cli' ), $assoc_args['count'] );
+		$progress = \WP_CLI\Utils\make_progress_bar(__('Generating post types', 'toolset-cli'), $assoc_args['count']);
 		for ( $i = 0; $i < $assoc_args['count']; $i ++ ) {
 			$this->create_item();
 			$progress->tick();
@@ -217,7 +217,7 @@ class PostType extends TypesCommand {
 
 		try {
 			$post_type_repository = \Toolset_Post_Type_Repository::get_instance();
-			$post_type = $post_type_repository->create( $slug, $plural, $singular );
+			$post_type = $post_type_repository->create($slug, $plural, $singular);
 
 			if ( isset( $post_type_options['show_in_rest'] ) && $post_type_options['show_in_rest'] == 'true' ) {
 				$post_type->set_show_in_rest( true );
@@ -234,11 +234,11 @@ class PostType extends TypesCommand {
 			$post_type_repository->save( $post_type );
 
 			if ( isset( $post_type_options['publicly_queryable'] ) ) {
-				$custom_types = get_option( \Toolset_Post_Type_Repository::POST_TYPES_OPTION_NAME, array() );
+				$custom_types = get_option(\Toolset_Post_Type_Repository::POST_TYPES_OPTION_NAME, array());
 				$custom_types[ $post_type->get_slug() ]['publicly_queryable'] = (
 					'true' === $post_type_options['publicly_queryable']
 				);
-				update_option( \Toolset_Post_Type_Repository::POST_TYPES_OPTION_NAME, $custom_types, true );
+				update_option(\Toolset_Post_Type_Repository::POST_TYPES_OPTION_NAME, $custom_types, true);
 				$post_type_repository->refresh_all_post_types();
 			}
 
@@ -266,14 +266,14 @@ class PostType extends TypesCommand {
 	public function empty_items( $args, $assoc_args ) {
 		$items = $this->get_items( 'types' );
 		if ( ! empty( $items ) ) {
-			$progress = \WP_CLI\Utils\make_progress_bar( __( 'Deleting post types', 'toolset-cli' ), count( $items ) );
+			$progress = \WP_CLI\Utils\make_progress_bar(__('Deleting post types', 'toolset-cli'), count( $items ));
 			foreach ( $items as $item ) {
 				$this->delete_item( $item['slug'] );
 				$progress->tick();
 			}
 			$progress->finish();
 		} else {
-			\WP_CLI::warning( __( 'There are no post types to delete.', 'toolset-cli' ) );
+			\WP_CLI::warning( __('There are no post types to delete.', 'toolset-cli') );
 		}
 	}
 
@@ -297,7 +297,7 @@ class PostType extends TypesCommand {
 	public function delete( $args, $assoc_args ) {
 		list( $slug ) = $args;
 		$this->delete_item( $slug );
-		\WP_CLI::success( __( 'Deleted post type.', 'toolset-cli' ) );
+		\WP_CLI::success( __('Deleted post type.', 'toolset-cli') );
 	}
 
 	/**
@@ -341,29 +341,29 @@ class PostType extends TypesCommand {
 		list( $slug ) = $args;
 
 		if ( empty( $slug ) ) {
-			\WP_CLI::error( __( 'You must specify a post type slug.', 'toolset-cli' ) );
+			\WP_CLI::error( __('You must specify a post type slug.', 'toolset-cli') );
 		}
 
 		$post_type_repository = \Toolset_Post_Type_Repository::get_instance();
 		$post_type = $post_type_repository->get_from_types( $slug );
 
 		if ( empty( $post_type ) ) {
-			\WP_CLI::error( __( 'Post type does not exist.', 'toolset-cli' ) );
+			\WP_CLI::error( __('Post type does not exist.', 'toolset-cli') );
 		}
 
 		if ( isset( $assoc_args['slug'] ) && ! empty ( $assoc_args['slug'] ) ) {
-			$post_type_repository->change_slug( $post_type, $assoc_args['slug'] );
+			$post_type_repository->change_slug($post_type, $assoc_args['slug']);
 		}
 		if ( isset( $assoc_args['singular'] ) && ! empty ( $assoc_args['singular'] ) ) {
-			$post_type->set_label( \Toolset_Post_Type_Labels::SINGULAR_NAME, $assoc_args['singular'] );
+			$post_type->set_label(\Toolset_Post_Type_Labels::SINGULAR_NAME, $assoc_args['singular']);
 		}
 		if ( isset( $assoc_args['plural'] ) && ! empty ( $assoc_args['plural'] ) ) {
-			$post_type->set_label( \Toolset_Post_Type_Labels::NAME, $assoc_args['plural'] );
+			$post_type->set_label(\Toolset_Post_Type_Labels::NAME, $assoc_args['plural']);
 		}
 
 		$post_type_repository->save( $post_type );
 
-		\WP_CLI::success( __( 'Updated post type.', 'toolset-cli' ) );
+		\WP_CLI::success( __('Updated post type.', 'toolset-cli') );
 	}
 
 	/**
@@ -386,10 +386,10 @@ class PostType extends TypesCommand {
 	public function activate( $args, $assoc_args ) {
 		list( $slug ) = $args;
 		$post_type_repository = \Toolset_Post_Type_Repository::get_instance();
-		$post_type = $this->get_post_type( $slug, true );
+		$post_type = $this->get_post_type($slug, true);
 		$post_type->set_is_disabled( false );
 		$post_type_repository->save( $post_type );
-		\WP_CLI::success( __( 'Activated post type.', 'toolset-cli' ) );
+		\WP_CLI::success( __('Activated post type.', 'toolset-cli') );
 	}
 
 	/**
@@ -412,9 +412,9 @@ class PostType extends TypesCommand {
 	public function deactivate( $args, $assoc_args ) {
 		list( $slug ) = $args;
 		$post_type_repository = \Toolset_Post_Type_Repository::get_instance();
-		$post_type = $this->get_post_type( $slug, true );
+		$post_type = $this->get_post_type($slug, true);
 		$post_type->set_is_disabled( true );
 		$post_type_repository->save( $post_type );
-		\WP_CLI::success( __( 'Deactivated post type.', 'toolset-cli' ) );
+		\WP_CLI::success( __('Deactivated post type.', 'toolset-cli') );
 	}
 }

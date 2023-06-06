@@ -43,18 +43,18 @@ class Translation extends ToolsetCommand {
 			'title' => \OTGS\Toolset\CLI\get_random_string(),
 			'content' => \OTGS\Toolset\CLI\get_random_string(),
 		);
-		$list_args = wp_parse_args( $assoc_args, $defaults );
+		$list_args = wp_parse_args($assoc_args, $defaults);
 
 		if ( empty( $list_args['post'] ) ) {
-			\WP_CLI::error( __( 'You must specify a post.', 'toolset-cli' ) );
+			\WP_CLI::error( __('You must specify a post.', 'toolset-cli') );
 		}
 
 		if ( empty( $list_args['language'] ) ) {
-			\WP_CLI::error( __( 'You must specify a language.', 'toolset-cli' ) );
+			\WP_CLI::error( __('You must specify a language.', 'toolset-cli') );
 		}
 
 		if ( false === get_post_status( $list_args['post'] ) ) {
-			\WP_CLI::error( __( 'You must specify a valid post ID.', 'toolset-cli' ) );
+			\WP_CLI::error( __('You must specify a valid post ID.', 'toolset-cli') );
 		}
 
 		$post_type = get_post_type( $list_args['post'] );
@@ -67,12 +67,12 @@ class Translation extends ToolsetCommand {
 		$translated_post_id = wp_insert_post( $translated_post_data );
 
 		global $sitepress;
-		$translation_id = $sitepress->set_element_language_details( $translated_post_id, 'post_' . $post_type, $list_args['post'], $list_args['language'] );
+		$translation_id = $sitepress->set_element_language_details($translated_post_id, 'post_' . $post_type, $list_args['post'], $list_args['language']);
 
 		if ( ! empty ( $translation_id ) ) {
-			\WP_CLI::success( __( 'Created translation.', 'toolset-cli' ) );
+			\WP_CLI::success( __('Created translation.', 'toolset-cli') );
 		} else {
-			\WP_CLI::error( __( 'Could not create translation.', 'toolset-cli' ) );
+			\WP_CLI::error( __('Could not create translation.', 'toolset-cli') );
 		}
 	}
 

@@ -66,32 +66,32 @@ class View extends Views_Common {
 			'output_id' => false,
 		);
 
-		$create_args = wp_parse_args( $assoc_args, $defaults );
+		$create_args = wp_parse_args($assoc_args, $defaults);
 
-		if ( ! in_array( $create_args['view_purpose'], self::$allowed_purpose ) ) {
-			\WP_CLI::error( __( 'Using unsupported View purpose.', 'toolset-cli' ) );
+		if ( ! in_array($create_args['view_purpose'], self::$allowed_purpose) ) {
+			\WP_CLI::error( __('Using unsupported View purpose.', 'toolset-cli') );
 		}
 
 		try {
 
-			$usages = $this->format_usage( $create_args['usage'], $create_args['usage_type'] );
-			$view = WPV_View::create( WPV_View::get_unique_title( $create_args['name'] ), $create_args );
+			$usages = $this->format_usage($create_args['usage'], $create_args['usage_type']);
+			$view = WPV_View::create(WPV_View::get_unique_title( $create_args['name'] ), $create_args);
 
-			$updated_meta = $this->cleanup_meta( array_merge( $create_args, $usages ) );
+			$updated_meta = $this->cleanup_meta( array_merge($create_args, $usages) );
 			$updated_meta['query_type'] = $this->query_type( $create_args['usage_type'] );
 
 			$view_meta = $view->get_postmeta( WPV_View::POSTMETA_VIEW_SETTINGS );
-			$view_meta = array_replace( $view_meta, $updated_meta );
+			$view_meta = array_replace($view_meta, $updated_meta);
 
-			$view->update_postmeta( WPV_View::POSTMETA_VIEW_SETTINGS, $view_meta );
+			$view->update_postmeta(WPV_View::POSTMETA_VIEW_SETTINGS, $view_meta);
 
 			if ( $view->id !== null ) {
-				$this->output_result( $view->id, $create_args, 'View created' );
+				$this->output_result($view->id, $create_args, 'View created');
 			} else {
-				\WP_CLI::error( __( 'Could not create the view.', 'toolset-cli' ) );
+				\WP_CLI::error( __('Could not create the view.', 'toolset-cli') );
 			}
 		} catch ( \Exception $e ) {
-			\WP_CLI::error( __( 'There was an error while creating new Views instance.', 'toolset-cli' ) );
+			\WP_CLI::error( __('There was an error while creating new Views instance.', 'toolset-cli') );
 		}
 
 	}
@@ -108,16 +108,16 @@ class View extends Views_Common {
 		$usages = array();
 		switch ( $usage_type ) {
 			case 'post_types':
-				$usages['post_type'] = array_values( explode( ',', $usage ) );
+				$usages['post_type'] = array_values( explode(',', $usage) );
 				break;
 			case 'users':
-				$usages['roles_type'] = array_values( explode( ',', $usage ) );
+				$usages['roles_type'] = array_values( explode(',', $usage) );
 				break;
 			case 'taxonomies':
-				$usages['taxonomy_type'] = array_values( explode( ',', $usage ) );
+				$usages['taxonomy_type'] = array_values( explode(',', $usage) );
 				break;
 			default:
-				\WP_CLI::error( sprintf( __( 'Unsupported view usage type %s', 'toolset-cli' ), $usage_type ) );
+				\WP_CLI::error( sprintf(__('Unsupported view usage type %s', 'toolset-cli'), $usage_type) );
 				break;
 		}
 
@@ -145,7 +145,7 @@ class View extends Views_Common {
 				$query_type[] = 'taxonomy';
 				break;
 			default:
-				\WP_CLI::error( sprintf( __( 'Unsupported view usage type %s', 'toolset-cli' ), $usage_type ) );
+				\WP_CLI::error( sprintf(__('Unsupported view usage type %s', 'toolset-cli'), $usage_type) );
 				break;
 		}
 

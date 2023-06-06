@@ -27,7 +27,7 @@ abstract class TypesCommand extends ToolsetCommand {
 	 */
 	protected function get_post_type( $slug, $from_types = false ) {
 		if ( empty( $slug ) ) {
-			\WP_CLI::error( __( 'You must specify a post type slug.', 'toolset-cli' ) );
+			\WP_CLI::error( __('You must specify a post type slug.', 'toolset-cli') );
 		}
 		$post_type_repository = \Toolset_Post_Type_Repository::get_instance();
 		$post_type = null;
@@ -39,7 +39,7 @@ abstract class TypesCommand extends ToolsetCommand {
 		}
 
 		if ( empty( $post_type ) ) {
-			\WP_CLI::error( __( 'Post type does not exist.', 'toolset-cli' ) );
+			\WP_CLI::error( __('Post type does not exist.', 'toolset-cli') );
 		}
 
 		return $post_type;

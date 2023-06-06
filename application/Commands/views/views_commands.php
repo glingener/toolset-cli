@@ -26,7 +26,7 @@ abstract class Views_Commands extends ToolsetCommand {
 	 */
 	protected function verify_is_wpa( $wpa ) {
 		if ( ! $wpa->is_a_wordpress_archive() ) {
-			\WP_CLI::error( __( 'Provided id doesn\'t belong to a WPA', 'toolset-cli' ) );
+			\WP_CLI::error( __('Provided id doesn\'t belong to a WPA', 'toolset-cli') );
 		}
 	}
 
@@ -39,10 +39,10 @@ abstract class Views_Commands extends ToolsetCommand {
 	 * @param string $fallback
 	 */
 	protected function output_result( $result, $args, $fallback ) {
-		if ( in_array( 'porcelain', $args ) ) {
+		if ( in_array('porcelain', $args) ) {
 			\WP_CLI::print_value( $result );
 		} else {
-			\WP_CLI::success( __( $fallback, 'toolset-cli' ) );
+			\WP_CLI::success( __($fallback, 'toolset-cli') );
 		}
 	}
 }

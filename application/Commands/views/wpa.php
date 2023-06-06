@@ -62,24 +62,24 @@ class WPA extends Views_Common {
 			'output_id' => false,
 		);
 
-		$create_args = wp_parse_args( $assoc_args, $defaults );
+		$create_args = wp_parse_args($assoc_args, $defaults);
 
-		if ( ! in_array( $create_args['view_purpose'], self::$allowed_purpose ) ) {
-			\WP_CLI::warning( __( 'Using unsupported WPA purpose', 'toolset-cli' ) );
+		if ( ! in_array($create_args['view_purpose'], self::$allowed_purpose) ) {
+			\WP_CLI::warning( __('Using unsupported WPA purpose', 'toolset-cli') );
 			$create_args['view_purpose'] = 'all';
 		}
 
 		try {
-			$wpa = WPV_WordPress_Archive::create( WPV_WordPress_Archive::get_unique_title( $create_args['name'] ), $create_args );
-			$this->update_assignment_option( $wpa->id, $this->format_usage( $create_args['usage'], $create_args['usage_type'] ) );
+			$wpa = WPV_WordPress_Archive::create(WPV_WordPress_Archive::get_unique_title( $create_args['name'] ), $create_args);
+			$this->update_assignment_option($wpa->id, $this->format_usage($create_args['usage'], $create_args['usage_type']));
 
 			if ( $wpa->id !== null ) {
-				$this->output_result( $wpa->id, $create_args, 'WordPress Archive created' );
+				$this->output_result($wpa->id, $create_args, 'WordPress Archive created');
 			} else {
-				\WP_CLI::error( __( 'Could not create WordPress Archive.', 'toolset-cli' ) );
+				\WP_CLI::error( __('Could not create WordPress Archive.', 'toolset-cli') );
 			}
 		} catch ( Exception $e ) {
-			\WP_CLI::error( __( 'There was an error while creating new Views instance.', 'toolset-cli' ) );
+			\WP_CLI::error( __('There was an error while creating new Views instance.', 'toolset-cli') );
 		}
 
 	}
@@ -104,9 +104,9 @@ class WPA extends Views_Common {
 			$formatted_usage[ $usage_string ] = $view;
 		}
 
-		$wpv_option = get_option( WPV_Settings::OPTION_NAME, array() );
+		$wpv_option = get_option(WPV_Settings::OPTION_NAME, array());
 
-		return update_option( WPV_Settings::OPTION_NAME, array_merge( $wpv_option, $formatted_usage ) );
+		return update_option(WPV_Settings::OPTION_NAME, array_merge($wpv_option, $formatted_usage));
 	}
 
 
@@ -121,13 +121,13 @@ class WPA extends Views_Common {
 	protected function format_usage( $usage, $usage_type ) {
 		switch ( $usage_type ) {
 			case 'post_types':
-				return sprintf( 'view_cpt_%s', $usage );
+				return sprintf('view_cpt_%s', $usage);
 			case 'standard':
-				return sprintf( 'view_%s', $usage );
+				return sprintf('view_%s', $usage);
 			case 'taxonomies':
-				return sprintf( 'view_taxonomy_loop_%s', $usage );
+				return sprintf('view_taxonomy_loop_%s', $usage);
 			default:
-				\WP_CLI::error( sprintf( __( 'Unsupported view usage type %s', 'toolset-cli' ), ucfirst( $usage_type ) ) );
+				\WP_CLI::error( sprintf(__('Unsupported view usage type %s', 'toolset-cli'), ucfirst( $usage_type )) );
 				break;
 		}
 	}

@@ -29,17 +29,17 @@ class Types extends TypesCommand {
 		list( $file ) = $args;
 
 		if ( empty ( $file ) || ! file_exists( $file ) ) {
-			\WP_CLI::warning( __( 'You must specify a valid file.', 'toolset-cli' ) );
+			\WP_CLI::warning( __('You must specify a valid file.', 'toolset-cli') );
 
 			return;
 		}
 
-		$import_file = apply_filters( 'types_import_from_zip_file', false, $file, null );
+		$import_file = apply_filters('types_import_from_zip_file', false, $file, null);
 
 		if ( $import_file ) {
-			\WP_CLI::success( __( 'The file was imported successfully.', 'toolset-cli' ) );
+			\WP_CLI::success( __('The file was imported successfully.', 'toolset-cli') );
 		} else {
-			\WP_CLI::error( __( 'There was an error while importing the file.', 'toolset-cli' ) );
+			\WP_CLI::error( __('There was an error while importing the file.', 'toolset-cli') );
 		}
 	}
 
@@ -65,7 +65,7 @@ class Types extends TypesCommand {
 		list( $file ) = $args;
 
 		if ( empty ( $file ) ) {
-			\WP_CLI::warning( __( 'You must specify a valid file.', 'toolset-cli' ) );
+			\WP_CLI::warning( __('You must specify a valid file.', 'toolset-cli') );
 
 			return;
 		}
@@ -74,9 +74,9 @@ class Types extends TypesCommand {
 		$exported_data = wpcf_admin_export_data( false );
 
 		if ( file_put_contents($file, $exported_data) ) {
-			\WP_CLI::success( __( 'The file was exported successfully.', 'toolset-cli' ) );
+			\WP_CLI::success( __('The file was exported successfully.', 'toolset-cli') );
 		} else {
-			\WP_CLI::error( __( 'There was an error while exporting the file.', 'toolset-cli' ) );
+			\WP_CLI::error( __('There was an error while exporting the file.', 'toolset-cli') );
 		}
 	}
 }

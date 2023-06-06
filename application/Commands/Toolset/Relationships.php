@@ -91,19 +91,19 @@ class Relationships extends ToolsetCommand {
 	 */
 	public function status( $args, $parameters ) {
 		if ( count( $parameters ) > 1 || count( $args ) > 0 ) {
-			$this->wp_cli()->error( __( 'Invalid subcommand syntax.', 'toolset-cli' ) );
+			$this->wp_cli()->error( __('Invalid subcommand syntax.', 'toolset-cli') );
 
 			return;
 		}
-		$subcommand = $this->get_subcommand( $parameters, self::STATUS_COMMANDS );
+		$subcommand = $this->get_subcommand($parameters, self::STATUS_COMMANDS);
 
 		\Toolset_Relationship_Controller::get_instance()->force_autoloader_initialization();
 
 		switch ( $subcommand ) {
 			case self::STATUS_SET_STATUS:
-				$status = (string) \toolset_getarr( $parameters, self::STATUS_SET_STATUS );
-				$enable_m2m = in_array( $status, [ 'true', '1', 'yes', 'enabled' ], true );
-				$disable_m2m = in_array( $status, [ 'false', '0', 'no', 'disabled' ], true );
+				$status = (string) \toolset_getarr($parameters, self::STATUS_SET_STATUS);
+				$enable_m2m = in_array($status, [ 'true', '1', 'yes', 'enabled' ], true);
+				$disable_m2m = in_array($status, [ 'false', '0', 'no', 'disabled' ], true);
 				if ( ! $enable_m2m && ! $disable_m2m ) {
 					$this->wp_cli()->error( 'Unrecognized status value.' );
 				}
@@ -114,7 +114,7 @@ class Relationships extends ToolsetCommand {
 				$this->initialize_relationships();
 				break;
 			case self::STATUS_SET_DATABASE_LAYER:
-				$this->set_database_layer( \toolset_getarr( $parameters, self::STATUS_SET_DATABASE_LAYER ) );
+				$this->set_database_layer( \toolset_getarr($parameters, self::STATUS_SET_DATABASE_LAYER) );
 				break;
 			case self::STATUS_CLEAR:
 				$this->clear_status();
@@ -126,20 +126,16 @@ class Relationships extends ToolsetCommand {
 
 
 	private function print_boolean_list( $condition, $title, $yes = null, $no = null ) {
-		$this->wp_cli()->log( sprintf(
-			' - %s: %s',
-			$title,
-			$condition
-				? $this->wp_cli()->green( $yes ? : __( 'yes', 'toolset-cli' ) )
-				: $this->wp_cli()->red( $no ? : __( 'no', 'toolset-cli' ) )
-		) );
+		$this->wp_cli()->log( sprintf(' - %s: %s', $title, $condition
+				? $this->wp_cli()->green( $yes ? : __('yes', 'toolset-cli') )
+				: $this->wp_cli()->red( $no ? : __('no', 'toolset-cli') )) );
 	}
 
 
 	private function has_legacy_relationships() {
 		if ( ! class_exists( \Toolset_Condition_Plugin_Types_Has_Legacy_Relationships::class ) ) {
 			$this->wp_cli()
-				->warning( __( 'Unable to determine if Types contains legacy relationships.', 'toolset-cli' ) );
+				->warning( __('Unable to determine if Types contains legacy relationships.', 'toolset-cli') );
 
 			return false;
 		}
@@ -194,7 +190,7 @@ class Relationships extends ToolsetCommand {
 
 
 	private function is_m2m_enabled() {
-		return apply_filters( 'toolset_is_m2m_enabled', false );
+		return apply_filters('toolset_is_m2m_enabled', false);
 	}
 
 
@@ -202,40 +198,25 @@ class Relationships extends ToolsetCommand {
 		$is_m2m_enabled = $this->is_m2m_enabled();
 
 		$this->wp_cli()->log(
-			$this->wp_cli()->white( __( 'Status of Toolset Relationships:', 'toolset-cli' ) . PHP_EOL )
+			$this->wp_cli()->white( __('Status of Toolset Relationships:', 'toolset-cli') . PHP_EOL )
 		);
-		$this->print_boolean_list(
-			$is_m2m_enabled,
-			__( 'Relationship functionality', 'toolset-cli' ),
-			__( 'enabled', 'toolset-cli' ),
-			__( 'disabled', 'toolset-cli' )
-		);
+		$this->print_boolean_list($is_m2m_enabled, __('Relationship functionality', 'toolset-cli'), __('enabled', 'toolset-cli'), __('disabled', 'toolset-cli'));
 
 		if ( $is_m2m_enabled ) {
 			$db_layer_mode = $this->get_database_layer_mode();
-			$this->wp_cli()->log( sprintf(
-				' - %s: %s',
-				__( 'Database layer mode', 'toolset-cli' ),
-				$db_layer_mode ? $this->wp_cli()->white( $db_layer_mode ) : $this->wp_cli()->red( 'N/A' )
-			) );
+			$this->wp_cli()->log( sprintf(' - %s: %s', __('Database layer mode', 'toolset-cli'), $db_layer_mode ? $this->wp_cli()->white( $db_layer_mode ) : $this->wp_cli()->red( 'N/A' )) );
 		} else {
-			$is_m2m_ready = apply_filters( 'toolset_is_m2m_ready', false );
-			$this->print_boolean_list(
-				$is_m2m_ready,
-				__( 'Ready for relationships', 'toolset-cli' )
-			);
+			$is_m2m_ready = apply_filters('toolset_is_m2m_ready', false);
+			$this->print_boolean_list($is_m2m_ready, __('Ready for relationships', 'toolset-cli'));
 
-			$this->print_boolean_list(
-				$this->has_legacy_relationships(),
-				__( 'Has legacy Type spost relationships', 'toolset-cli' )
-			);
+			$this->print_boolean_list($this->has_legacy_relationships(), __('Has legacy Type spost relationships', 'toolset-cli'));
 		}
 	}
 
 
 	private function set_relationship_status( $enable_m2m ) {
 		if ( $this->is_m2m_enabled() === $enable_m2m ) {
-			$this->wp_cli()->warning( __( 'There\'s nothing to do.', 'toolset-cli' ) );
+			$this->wp_cli()->warning( __('There\'s nothing to do.', 'toolset-cli') );
 
 			return;
 		}
@@ -244,36 +225,34 @@ class Relationships extends ToolsetCommand {
 			$this->get_initial_state_setup()->store_state( $enable_m2m );
 			\Toolset_Relationship_Controller::get_instance()->reset();
 
-			$this->wp_cli()->success( __( 'Relationship functionality status updated.', 'toolset-cli' ) );
+			$this->wp_cli()->success( __('Relationship functionality status updated.', 'toolset-cli') );
 		} catch ( \Throwable $t ) {
-			$this->wp_cli()->error( sprintf(
-				'%s: "%s"',
-				__( 'Unable to set the relationship functionality status', 'toolset-cli' ),
-				$t->getMessage()
-			) );
-		}
+			$this->wp_cli()->error( sprintf('%s: "%s"', __('Unable to set the relationship functionality status', 'toolset-cli'), $t->getMessage()) );
+		} catch (\Exception $t) {
+      $this->wp_cli()->error( sprintf('%s: "%s"', __('Unable to set the relationship functionality status', 'toolset-cli'), $t->getMessage()) );
+  }
 	}
 
 
 	private function initialize_relationships() {
-		$this->wp_cli()->log( __( 'Installing relationships database tables...', 'toolset-cli' ) );
+		$this->wp_cli()->log( __('Installing relationships database tables...', 'toolset-cli') );
 		$initial_state_setup = $this->get_initial_state_setup();
 
-		remove_filter( 'toolset_allow_auto_enabling_m2m', '__return_false' );
+		remove_filter('toolset_allow_auto_enabling_m2m', '__return_false');
 		$is_success = $initial_state_setup->enable_relationships();
-		add_filter( 'toolset_allow_auto_enabling_m2m', '__return_false' );
+		add_filter('toolset_allow_auto_enabling_m2m', '__return_false');
 
 		if ( $is_success ) {
-			$this->wp_cli()->success( __( 'Relationships database tables installed.', 'toolset-cli' ) );
+			$this->wp_cli()->success( __('Relationships database tables installed.', 'toolset-cli') );
 		} else {
 			$this->wp_cli()
-				->error( __( 'Unable to properly install the relationships database tables', 'toolset-cli' ) );
+				->error( __('Unable to properly install the relationships database tables', 'toolset-cli') );
 		}
 	}
 
 
 	private function set_database_layer( $database_layer_value ) {
-		$this->wp_cli()->log( __( 'Setting the database layer version...', 'toolset-cli' ) );
+		$this->wp_cli()->log( __('Setting the database layer version...', 'toolset-cli') );
 
 		try {
 			$this->get_database_layer_manager()->set( $database_layer_value );
@@ -281,14 +260,17 @@ class Relationships extends ToolsetCommand {
 			$this->wp_cli()->error( $t->getMessage() );
 
 			return;
-		}
+		} catch (\Exception $t) {
+      $this->wp_cli()->error( $t->getMessage() );
+      return;
+  }
 
-		$this->wp_cli()->success( __( 'Database layer version updated.', 'toolset-cli' ) );
+		$this->wp_cli()->success( __('Database layer version updated.', 'toolset-cli') );
 	}
 
 
 	private function clear_status() {
-		$this->wp_cli()->log( __( 'Deleting options about relationships functionality...', 'toolset-cli' ) );
+		$this->wp_cli()->log( __('Deleting options about relationships functionality...', 'toolset-cli') );
 		try {
 			delete_option( \Toolset_Relationship_Controller::IS_M2M_ENABLED_OPTION );
 			delete_option( DatabaseLayerMode::OPTION_NAME );
@@ -297,9 +279,12 @@ class Relationships extends ToolsetCommand {
 			$this->wp_cli()->error( $t->getMessage() );
 
 			return;
-		}
+		} catch (\Exception $t) {
+      $this->wp_cli()->error( $t->getMessage() );
+      return;
+  }
 
-		$this->wp_cli()->success( __( 'Options deleted.', 'toolset-cli' ) );
+		$this->wp_cli()->success( __('Options deleted.', 'toolset-cli') );
 	}
 
 
@@ -345,13 +330,13 @@ class Relationships extends ToolsetCommand {
 	 * @noinspection PhpUnusedParameterInspection
 	 */
 	public function migrate( $args, $parameters, $return = false ) {
-		$is_porcelain_mode = array_key_exists( 'porcelain', $parameters );
+		$is_porcelain_mode = array_key_exists('porcelain', $parameters);
 		$this->wp_cli()->set_porcelain( $is_porcelain_mode );
 
-		if ( array_key_exists( 'complete', $parameters ) ) {
-			$this->wp_cli()->confirm( __( 'You are about to run the complete migration. Do you want to continue?', 'toolset-cli' ), $parameters );
-			$this->wp_cli()->log( __( 'Beginning the complete migration process...', 'toolset-cli' ) );
-			if ( array_key_exists( self::MIGRATION_STATE, $parameters ) ) {
+		if ( array_key_exists('complete', $parameters) ) {
+			$this->wp_cli()->confirm(__('You are about to run the complete migration. Do you want to continue?', 'toolset-cli'), $parameters);
+			$this->wp_cli()->log( __('Beginning the complete migration process...', 'toolset-cli') );
+			if ( array_key_exists(self::MIGRATION_STATE, $parameters) ) {
 				// Try to resume via provided state parameter.
 				$database_layer_factory = $this->get_database_layer_factory();
 				$migration_controller = $database_layer_factory->migration_controller(
@@ -360,53 +345,45 @@ class Relationships extends ToolsetCommand {
 				$next_state = $migration_controller->unserialize_migration_state( $parameters[ self::MIGRATION_STATE ] );
 			} else {
 				// Start the migration from the beginning.
-				$next_state = $this->migrate( [], [], true );
+				$next_state = $this->migrate([], [], true);
 			}
-			$stop_at_step = array_key_exists( self::MIGRATION_STOP_AT_STEP, $parameters ) ? (int) $parameters[ self::MIGRATION_STOP_AT_STEP ] : 0;
-			$args_to_pass = array_filter( $parameters, static function( $key ) {
-				return in_array( $key, [ self::MIGRATION_NO_SQL_TRANSACTION, self::MIGRATION_ONLY_RELATIONSHIPS ], true );
-			}, ARRAY_FILTER_USE_KEY );
+			$stop_at_step = array_key_exists(self::MIGRATION_STOP_AT_STEP, $parameters) ? (int) $parameters[ self::MIGRATION_STOP_AT_STEP ] : 0;
+			$args_to_pass = array_filter($parameters, static function( $key ) {
+				return in_array($key, [ self::MIGRATION_NO_SQL_TRANSACTION, self::MIGRATION_ONLY_RELATIONSHIPS ], true);
+			}, ARRAY_FILTER_USE_KEY);
 
 			while ( $next_state && $next_state->can_continue() ) {
 				if( $stop_at_step && $next_state->get_next_step_number() >= $stop_at_step ) {
-					$this->wp_cli()->success( sprintf(
-						__( 'Stopping the migration at step %d as requested.', 'toolset-cli'),
-						$stop_at_step
-					) );
+					$this->wp_cli()->success( sprintf(__('Stopping the migration at step %d as requested.', 'toolset-cli'), $stop_at_step) );
 					return null;
 				}
-				$next_state = $this->migrate(
-					[], array_merge( $args_to_pass, [ 'state' => $next_state->serialize() ] ), true
-				);
+				$next_state = $this->migrate([], array_merge($args_to_pass, [ 'state' => $next_state->serialize() ]), true);
 
 				$substep_count = $next_state->get_substep_count();
 				if ( $substep_count > 0 ) {
-					$this->wp_cli()->log( sprintf(
-						__( 'Substep progress: %d%%', 'toolset-cli' ),
-						( $next_state->get_current_substep() / $substep_count ) * 100
-					) );
+					$this->wp_cli()->log( sprintf(__('Substep progress: %d%%', 'toolset-cli'), ( $next_state->get_current_substep() / $substep_count ) * 100) );
 				}
 			}
 			$is_success = ( $next_state && $next_state->get_result()->is_success() );
 			if ( $is_success ) {
-				$this->wp_cli()->success( __( 'The migration has been completed successfully.', 'toolset-cli' ) );
+				$this->wp_cli()->success( __('The migration has been completed successfully.', 'toolset-cli') );
 			} else {
-				$this->wp_cli()->error( __( 'The migration has finished with an error.', 'toolset-cli' ) );
+				$this->wp_cli()->error( __('The migration has finished with an error.', 'toolset-cli') );
 			}
 
 			return null;
 		}
 
-		if ( array_key_exists( 'rollback', $parameters ) ) {
-			$this->wp_cli()->confirm( __( 'You are about to roll back the relationship database layer to the pre-migration state. All changes made since then to associations will be lost. Do you want to continue?', 'toolset-cli' ), $parameters );
+		if ( array_key_exists('rollback', $parameters) ) {
+			$this->wp_cli()->confirm(__('You are about to roll back the relationship database layer to the pre-migration state. All changes made since then to associations will be lost. Do you want to continue?', 'toolset-cli'), $parameters);
 			$final_associations_table = $this->wpdb->prefix . \OTGS\Toolset\Common\Relationships\DatabaseLayer\Version2\TableNames::ASSOCIATIONS;
 			$backup_associations_table = $this->wpdb->prefix . \OTGS\Toolset\Common\Relationships\DatabaseLayer\Version2\Migration\MigrationController::TEMPORARY_OLD_ASSOCIATION_TABLE_NAME;
 			$connected_elements_table = $this->wpdb->prefix . \OTGS\Toolset\Common\Relationships\DatabaseLayer\Version2\TableNames::CONNECTED_ELEMENTS;
 			$this->wpdb->query( "DROP TABLE IF EXISTS {$final_associations_table}" );
 			$this->wpdb->query( "DROP TABLE IF EXISTS {$connected_elements_table}" );
 			$this->wpdb->query( "RENAME TABLE {$backup_associations_table} TO {$final_associations_table}" );
-			$this->status( [], [ 'set-database-layer' => 'version1' ] );
-			$this->wp_cli()->log( __( 'Rollback finished.', 'toolset-cli' ) );
+			$this->status([], [ 'set-database-layer' => 'version1' ]);
+			$this->wp_cli()->log( __('Rollback finished.', 'toolset-cli') );
 			return null;
 		}
 
@@ -416,68 +393,48 @@ class Relationships extends ToolsetCommand {
 				DatabaseLayerMode::VERSION_1
 			);
 
-			if ( ! array_key_exists( self::MIGRATION_STATE, $parameters ) ) {
-				$this->wp_cli()->log( __( 'No migration state provided, returning the initial one.', 'toolset-cli' ) );
+			if ( ! array_key_exists(self::MIGRATION_STATE, $parameters) ) {
+				$this->wp_cli()->log( __('No migration state provided, returning the initial one.', 'toolset-cli') );
 				$next_state = $migration_controller->get_initial_state();
 			} else {
 				try {
 					$current_state = $migration_controller->unserialize_migration_state( $parameters[ self::MIGRATION_STATE ] );
 				} catch ( \Exception $e ) {
-					$this->wp_cli()->error( sprintf(
-						'%s: %s',
-						__( 'Unable to read the provided migration state.', 'toolset-cli' ),
-						$e->getMessage()
-					) );
+					$this->wp_cli()->error( sprintf('%s: %s', __('Unable to read the provided migration state.', 'toolset-cli'), $e->getMessage()) );
 
 					return null;
 				}
 
-				if ( array_key_exists( self::MIGRATION_NO_SQL_TRANSACTION, $parameters ) ) {
-					$current_state->set_property( 'no_sql_transaction', true );
+				if ( array_key_exists(self::MIGRATION_NO_SQL_TRANSACTION, $parameters) ) {
+					$current_state->set_property('no_sql_transaction', true);
 				}
 
-				if ( array_key_exists( self::MIGRATION_ONLY_RELATIONSHIPS, $parameters ) ) {
-					$current_state->set_property( 'only_relationships', $parameters[ self::MIGRATION_ONLY_RELATIONSHIPS ] );
+				if ( array_key_exists(self::MIGRATION_ONLY_RELATIONSHIPS, $parameters) ) {
+					$current_state->set_property('only_relationships', $parameters[ self::MIGRATION_ONLY_RELATIONSHIPS ]);
 				}
 
-				$this->wp_cli()->log( __( 'Performing the migration step as requested...', 'toolset-cli' ) );
+				$this->wp_cli()->log( __('Performing the migration step as requested...', 'toolset-cli') );
 
 				try {
 					$next_state = $migration_controller->do_next_step( $current_state );
 				} catch ( \Exception $e ) {
-					$this->wp_cli()->error( sprintf(
-						'%s: "%s"',
-						__( 'An error has occurred while performing a migration step', 'toolset-cli' ),
-						$e->getMessage()
-					) );
+					$this->wp_cli()->error( sprintf('%s: "%s"', __('An error has occurred while performing a migration step', 'toolset-cli'), $e->getMessage()) );
 
 					return null;
 				}
 
 				if ( $next_state->get_result()->is_success() ) {
-					$this->wp_cli()->success( sprintf(
-						'%s: "%s"',
-						__( 'The migration step has been completed successfully', 'toolset-cli' ),
-						$this->get_formatted_result_message( $next_state->get_result() )
-					) );
+					$this->wp_cli()->success( sprintf('%s: "%s"', __('The migration step has been completed successfully', 'toolset-cli'), $this->get_formatted_result_message( $next_state->get_result() )) );
 				} else {
-					$this->wp_cli()->error( sprintf(
-						'%s: "%s"',
-						__( 'There has been an error while performing the migration step', 'toolset-cli' ),
-						$this->get_formatted_result_message( $next_state->get_result() )
-					) );
+					$this->wp_cli()->error( sprintf('%s: "%s"', __('There has been an error while performing the migration step', 'toolset-cli'), $this->get_formatted_result_message( $next_state->get_result() )) );
 				}
 			}
 
 			$next_state_serialized = $next_state->serialize();
-			$this->wp_cli()->log( sprintf(
-				"%s:\n\n%s\n",
-				__( 'Next migration state', 'toolset-cli' ),
-				$next_state_serialized
-			) );
+			$this->wp_cli()->log( sprintf("%s:\n\n%s\n", __('Next migration state', 'toolset-cli'), $next_state_serialized) );
 
 			if ( $is_porcelain_mode ) {
-				$this->wp_cli()->log( $next_state_serialized, true );
+				$this->wp_cli()->log($next_state_serialized, true);
 			}
 
 			if ( $return ) {
@@ -493,7 +450,7 @@ class Relationships extends ToolsetCommand {
 
 	private function get_formatted_result_message( ResultInterface $result ) {
 		if ( $result instanceof ResultSet ) {
-			return $result->concat_messages( PHP_EOL, ResultSet::ALL_MESSAGES, LogLevel::DEBUG );
+			return $result->concat_messages(PHP_EOL, ResultSet::ALL_MESSAGES, LogLevel::DEBUG);
 		}
 
 		return $result->get_message();

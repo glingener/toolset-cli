@@ -37,30 +37,30 @@ class Association extends TypesCommand {
 			'relationship' => null,
 		);
 
-		$assoc_args = wp_parse_args( $assoc_args, $defaults );
+		$assoc_args = wp_parse_args($assoc_args, $defaults);
 
 		if ( ( $assoc_args['first'] == null ) || ( $assoc_args['second'] == null ) ) {
-			\WP_CLI::error( __( 'Please insert valid item IDs.', 'toolset-cli' ) );
+			\WP_CLI::error( __('Please insert valid item IDs.', 'toolset-cli') );
 		}
 
 		$definition_repository = \Toolset_Relationship_Definition_Repository::get_instance();
 		$definition = $definition_repository->get_definition( $assoc_args['relationship'] );
 
 		if ( ! isset( $assoc_args['relationship'] ) || ( $definition == null ) ) {
-			\WP_CLI::error( __( 'Please insert a valid relationship.', 'toolset-cli' ) );
+			\WP_CLI::error( __('Please insert a valid relationship.', 'toolset-cli') );
 		}
 
 		try {
-			$assocation = $definition->create_association( $assoc_args['first'], $assoc_args['second'] );
+			$assocation = $definition->create_association($assoc_args['first'], $assoc_args['second']);
 
-			if ( is_a( $assocation, 'Toolset_Result' ) && $assocation->is_error() ) {
-				\WP_CLI::error( __( 'Could not create association. ' . $assocation->get_message(), 'toolset-cli' ) );
+			if ( is_a($assocation, 'Toolset_Result') && $assocation->is_error() ) {
+				\WP_CLI::error( __('Could not create association. ' . $assocation->get_message(), 'toolset-cli') );
 			}
 		} catch ( \Exception $e ) {
-			\WP_CLI::error( __( 'Could not create association. ' . $e->getMessage(), 'toolset-cli' ) );
+			\WP_CLI::error( __('Could not create association. ' . $e->getMessage(), 'toolset-cli') );
 		}
 
-		\WP_CLI::success( __( 'Created association.', 'toolset-cli' ) );
+		\WP_CLI::success( __('Created association.', 'toolset-cli') );
 	}
 
 
@@ -100,17 +100,17 @@ class Association extends TypesCommand {
 			'post' => null,
 			'relationship' => null,
 		);
-		$assoc_args = wp_parse_args( $assoc_args, $defaults );
+		$assoc_args = wp_parse_args($assoc_args, $defaults);
 
 		if ( ! is_null( $assoc_args['post'] ) && $assoc_args['count-first'] != 1 ) {
-			\WP_CLI::error( __( 'First count parameter cannot be set when post parameter is set.', 'toolset-cli' ) );
+			\WP_CLI::error( __('First count parameter cannot be set when post parameter is set.', 'toolset-cli') );
 		}
 
 		$definition_repository = \Toolset_Relationship_Definition_Repository::get_instance();
 		$definition = $definition_repository->get_definition( $assoc_args['relationship'] );
 
 		if ( ! isset( $assoc_args['relationship'] ) || ( $definition == null ) ) {
-			\WP_CLI::error( __( 'Please insert a valid relationship.', 'toolset-cli' ) );
+			\WP_CLI::error( __('Please insert a valid relationship.', 'toolset-cli') );
 		}
 
 		$first_post_type = $definition->get_parent_type()->get_types()[0];
@@ -121,34 +121,34 @@ class Association extends TypesCommand {
 			'exit_error' => true,
 		);
 
-		$progress = \WP_CLI\Utils\make_progress_bar( __( 'Generating associations', 'toolset-cli' ), $assoc_args['count-first']
-			* $assoc_args['count-second'] );
+		$progress = \WP_CLI\Utils\make_progress_bar(__('Generating associations', 'toolset-cli'), $assoc_args['count-first']
+			* $assoc_args['count-second']);
 		for ( $i = 0; $i < $assoc_args['count-first']; $i ++ ) {
 
 			$first_item = $assoc_args['post'];
 
 			if ( is_null( $first_item ) ) {
-				$first_item = \WP_CLI::runcommand( 'post create --porcelain --post_status=publish --post_type='
+				$first_item = \WP_CLI::runcommand('post create --porcelain --post_status=publish --post_type='
 					. $first_post_type
 					. ' --post_title='
-					. \OTGS\Toolset\CLI\get_random_string(), $wpcli_command_options );
+					. \OTGS\Toolset\CLI\get_random_string(), $wpcli_command_options);
 			}
 
 			for ( $j = 0; $j < $assoc_args['count-second']; $j ++ ) {
-				$second_item = \WP_CLI::runcommand( 'post create --porcelain --post_status=publish --post_type='
+				$second_item = \WP_CLI::runcommand('post create --porcelain --post_status=publish --post_type='
 					. $second_post_type
 					. ' --post_title='
-					. \OTGS\Toolset\CLI\get_random_string(), $wpcli_command_options );
+					. \OTGS\Toolset\CLI\get_random_string(), $wpcli_command_options);
 
 				try {
-					$assocation = $definition->create_association( $first_item, $second_item );
+					$assocation = $definition->create_association($first_item, $second_item);
 
-					if ( is_a( $assocation, 'Toolset_Result' ) && $assocation->is_error() ) {
-						\WP_CLI::warning( __( 'Could not create association. '
-							. $assocation->get_message(), 'toolset-cli' ) );
+					if ( is_a($assocation, 'Toolset_Result') && $assocation->is_error() ) {
+						\WP_CLI::warning( __('Could not create association. '
+							. $assocation->get_message(), 'toolset-cli') );
 					}
 				} catch ( \Exception $e ) {
-					\WP_CLI::error( __( 'Could not create association. ' . $e->getMessage(), 'toolset-cli' ) );
+					\WP_CLI::error( __('Could not create association. ' . $e->getMessage(), 'toolset-cli') );
 				}
 
 				$progress->tick();
@@ -193,7 +193,7 @@ class Association extends TypesCommand {
 			'query-by-role' => 'parent',
 			'format' => 'table',
 		);
-		$assoc_args = wp_parse_args( $assoc_args, $defaults );
+		$assoc_args = wp_parse_args($assoc_args, $defaults);
 		$relationship_slug = $assoc_args['relationship'];
 		$post = $assoc_args['post'] ;
 
@@ -206,16 +206,16 @@ class Association extends TypesCommand {
 		$query_args['role_to_return'] = $assoc_args['role-to-return'];
 		$query_args['query_by_role'] = $assoc_args['query-by-role'];
 
-		$related_posts = toolset_get_related_posts ( $post, $relationship_slug, $query_args ) ;
+		$related_posts = toolset_get_related_posts($post, $relationship_slug, $query_args) ;
 
 		$columns = [ 'ID', 'post_title', ] ;
-		$items = array_map ( function ( $related_post ) {
+		$items = array_map(function ( $related_post ) {
 			return [
 				'ID' => $related_post,
 				'post_title' => get_the_title ($related_post)
 			] ;
 		}, $related_posts) ;
 
-		\WP_CLI\Utils\format_items( $assoc_args['format'], $items, $columns );
+		\WP_CLI\Utils\format_items($assoc_args['format'], $items, $columns);
 	}
 }

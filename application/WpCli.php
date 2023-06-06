@@ -37,7 +37,7 @@ class WpCli {
 			return;
 		}
 		/** @noinspection PhpUnhandledExceptionInspection */
-		\WP_CLI::error( $message, $exit );
+		\WP_CLI::error($message, $exit);
 	}
 
 
@@ -112,11 +112,11 @@ class WpCli {
 	 * @return mixed
 	 */
 	public function runcommand( $command, $options = [] ) {
-		return \WP_CLI::runcommand( $command, $options );
+		return \WP_CLI::runcommand($command, $options);
 	}
 
 
 	public function confirm( $question, $parameters = [] ) {
-		return \WP_CLI::confirm( $question, $parameters );
+		return \WP_CLI::confirm($question, $parameters);
 	}
 }

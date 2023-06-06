@@ -52,10 +52,10 @@ class Updater {
 	 * Initialize the updater.
 	 */
 	public function initialize() {
-		add_filter( 'pre_set_site_transient_update_plugins', [ $this, 'modify_transient' ], 10, 1 );
-		add_filter( 'plugins_api', [ $this, 'plugin_popup' ], 10, 3 );
-		add_filter( 'upgrader_post_install', [ $this, 'after_install' ], 10, 3 );
-		add_filter( 'plugin_row_meta', [ $this, 'filter_plugin_links' ], 10, 2 );
+		add_filter('pre_set_site_transient_update_plugins', [ $this, 'modify_transient' ], 10, 1);
+		add_filter('plugins_api', [ $this, 'plugin_popup' ], 10, 3);
+		add_filter('upgrader_post_install', [ $this, 'after_install' ], 10, 3);
+		add_filter('plugin_row_meta', [ $this, 'filter_plugin_links' ], 10, 2);
 	}
 
 
@@ -66,12 +66,13 @@ class Updater {
 	 *
 	 * @return string
 	 */
-	private function get_plugin_property( string $key ): string {
-		if ( null === $this->plugin_data ) {
+	private function get_plugin_property( $key ) {
+		$key = (string) $key;
+  if ( null === $this->plugin_data ) {
 			$this->plugin_data = get_plugin_data( $this->plugin_filename_path );
 		}
 
-		if ( ! array_key_exists( $key, $this->plugin_data ) ) {
+		if ( ! array_key_exists($key, $this->plugin_data) ) {
 			return '';
 		}
 
@@ -79,7 +80,10 @@ class Updater {
 	}
 
 
-	private function get_plugin_basename(): string {
+	/**
+  * @return string
+  */
+ private function get_plugin_basename() {
 		if ( null === $this->plugin_basename ) {
 			$this->plugin_basename = plugin_basename( $this->plugin_filename_path );
 		}
@@ -95,9 +99,10 @@ class Updater {
 	 *
 	 * @return string|array
 	 */
-	private function get_latest_release_property( string $key ) {
-		$release_info = $this->get_latest_release_info();
-		if ( ! array_key_exists( $key, $release_info ) ) {
+	private function get_latest_release_property( $key ) {
+		$key = (string) $key;
+  $release_info = $this->get_latest_release_info();
+		if ( ! array_key_exists($key, $release_info) ) {
 			return '';
 		}
 
@@ -118,7 +123,7 @@ class Updater {
 
 		$asset = reset( $assets );
 
-		if ( ! array_key_exists( self::GITHUB_ASSET_DOWNLOAD_URL, $asset ) ) {
+		if ( ! array_key_exists(self::GITHUB_ASSET_DOWNLOAD_URL, $asset) ) {
 			return null;
 		}
 
@@ -133,16 +138,13 @@ class Updater {
 
 
 	/**
-	 * Get details about the latest release from GitHub's API.
-	 */
-	private function get_latest_release_info(): array {
+  * Get details about the latest release from GitHub's API.
+  * @return mixed[]
+  */
+ private function get_latest_release_info() {
 		if ( null === $this->github_response ) {
-			$api_uri = sprintf(
-				'https://api.github.com/repos/%1$s/%2$s/releases/latest',
-				self::GITHUB_ORGANIZATION,
-				self::GITHUB_REPOSITORY
-			);
-			$response = json_decode( wp_remote_retrieve_body( wp_remote_get( $api_uri ) ), true );
+			$api_uri = sprintf('https://api.github.com/repos/%1$s/%2$s/releases/latest', self::GITHUB_ORGANIZATION, self::GITHUB_REPOSITORY);
+			$response = json_decode(wp_remote_retrieve_body( wp_remote_get( $api_uri ) ), true);
 
 			$this->github_response = $response;
 		}
@@ -161,11 +163,8 @@ class Updater {
 	 */
 	public function modify_transient( $transient ) {
 		// Did WordPress check for updates?
-		if ( property_exists( $transient, 'checked' ) && $transient->checked ) {
-			$is_out_of_date = version_compare(
-				$this->get_latest_release_property( self::GITHUB_RELEASE_VERSION ),
-				$transient->checked[ $this->get_plugin_basename() ], 'gt'
-			);
+		if ( property_exists($transient, 'checked') && $transient->checked ) {
+			$is_out_of_date = version_compare($this->get_latest_release_property( self::GITHUB_RELEASE_VERSION ), $transient->checked[ $this->get_plugin_basename() ], 'gt');
 
 			if ( $is_out_of_date ) {
 				$download_url = $this->get_latest_release_download_url();
@@ -186,8 +185,11 @@ class Updater {
 	}
 
 
-	private function get_plugin_slug(): string {
-		return current( explode( '/', $this->get_plugin_basename(), 2 ) );
+	/**
+  * @return string
+  */
+ private function get_plugin_slug() {
+		return current( explode('/', $this->get_plugin_basename(), 2) );
 	}
 
 
@@ -202,11 +204,7 @@ class Updater {
 	public function filter_plugin_links( $links, $file ) {
 		// Are we looking at the plugin row of our plugin?
 		if ( $file === $this->get_plugin_basename() ) {
-			$links[] = sprintf(
-				'<a href="%s" rel="noopener" target="_blank">%s</a>',
-				$this->get_plugin_property( self::PLUGIN_PROP_URI ),
-				__( 'Visit plugin site', 'toolset-cli' )
-			);
+			$links[] = sprintf('<a href="%s" rel="noopener" target="_blank">%s</a>', $this->get_plugin_property( self::PLUGIN_PROP_URI ), __('Visit plugin site', 'toolset-cli'));
 		}
 
 		return $links;
@@ -248,13 +246,11 @@ class Updater {
 	}
 
 
-	private function get_plugin_description_for_popup(): string {
-		return sprintf(
-			'<p>%s</p><p><strong><a href="%s" target="_blank" rel="nofollow">%s</a></strong></p>',
-			wp_kses( $this->get_plugin_property( self::PLUGIN_PROP_DESCRIPTION ), 'post' ),
-			$this->get_plugin_property( self::PLUGIN_PROP_URI ),
-			__( 'Visit the plugin homepage for changelog and further details', 'toolset-cli' )
-		);
+	/**
+  * @return string
+  */
+ private function get_plugin_description_for_popup() {
+		return sprintf('<p>%s</p><p><strong><a href="%s" target="_blank" rel="nofollow">%s</a></strong></p>', wp_kses($this->get_plugin_property( self::PLUGIN_PROP_DESCRIPTION ), 'post'), $this->get_plugin_property( self::PLUGIN_PROP_URI ), __('Visit the plugin homepage for changelog and further details', 'toolset-cli'));
 	}
 
 	/**
@@ -273,7 +269,7 @@ class Updater {
 
 		// Move files to the plugin directory and set the destination for the rest of the stack.
 		$install_directory = plugin_dir_path( $this->plugin_filename_path );
-		$wp_filesystem->move( $result['destination'], $install_directory );
+		$wp_filesystem->move($result['destination'], $install_directory);
 		$result['destination'] = $install_directory;
 
 		if ( is_plugin_active( $this->get_plugin_basename() ) ) {

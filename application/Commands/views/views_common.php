@@ -42,10 +42,10 @@ abstract class Views_Common extends Views_Commands {
 			"type"  => 'paged'
 		);
 
-		$pagination_args = wp_parse_args( $assoc_args, $defaults );
+		$pagination_args = wp_parse_args($assoc_args, $defaults);
 
 		if ( !is_numeric($id) ) {
-			\WP_CLI::error( __( 'Please provide a View id', 'toolset-cli' ) );
+			\WP_CLI::error( __('Please provide a View id', 'toolset-cli') );
 		}
 
 		try {
@@ -58,20 +58,20 @@ abstract class Views_Common extends Views_Commands {
 				$view_settings['pagination']['posts_per_page'] = $pagination_args['count'];
 				$view_settings['pagination']['type']           = $pagination_args['type'];
 
-				$result = $view->update_postmeta( WPV_View::POSTMETA_VIEW_SETTINGS, $view_settings );
+				$result = $view->update_postmeta(WPV_View::POSTMETA_VIEW_SETTINGS, $view_settings);
 
 				if ( !empty($result) ) {
-					\WP_CLI::success( __( 'Updated pagination settings', 'toolset-cli' ) );
+					\WP_CLI::success( __('Updated pagination settings', 'toolset-cli') );
 				} else {
-					\WP_CLI::error( __( 'Could not update the pagination settings', 'toolset-cli' ) );
+					\WP_CLI::error( __('Could not update the pagination settings', 'toolset-cli') );
 				}
 
 			} else {
-				\WP_CLI::error( __( 'There was an error while creating new Views instance.', 'toolset-cli' ) );
+				\WP_CLI::error( __('There was an error while creating new Views instance.', 'toolset-cli') );
 			}
 
 		} catch ( \Exception $e ) {
-			\WP_CLI::error( __( 'There was an error while creating new Views instance.', 'toolset-cli' ) );
+			\WP_CLI::error( __('There was an error while creating new Views instance.', 'toolset-cli') );
 		}
 	}
 
@@ -105,7 +105,7 @@ abstract class Views_Common extends Views_Commands {
 			"field" => ''
 		);
 
-		$loop_args = wp_parse_args( $assoc_args, $defaults );
+		$loop_args = wp_parse_args($assoc_args, $defaults);
 
 		try {
 
@@ -114,15 +114,15 @@ abstract class Views_Common extends Views_Commands {
 			$view->begin_modifying_view_settings();
 			$view->begin_modifying_loop_settings();
 
-			$view->loop_meta_html = str_replace( "</wpv-loop>", sprintf( " %s </wpv-loop>", $loop_args['field'] ), $view->loop_meta_html );
+			$view->loop_meta_html = str_replace("</wpv-loop>", sprintf(" %s </wpv-loop>", $loop_args['field']), $view->loop_meta_html);
 
 			$view->finish_modifying_loop_settings();
 			$view->finish_modifying_view_settings();
 
-			\WP_CLI::success( __( 'Added a new field to the loop', 'toolset-cli' ) );
+			\WP_CLI::success( __('Added a new field to the loop', 'toolset-cli') );
 
 		} catch ( \Exception $e ) {
-			\WP_CLI::error( __( 'There was an error while creating new Views instance.', 'toolset-cli' ) );
+			\WP_CLI::error( __('There was an error while creating new Views instance.', 'toolset-cli') );
 		}
 	}
 

@@ -52,7 +52,7 @@ class Import extends ToolsetCommand {
 		list( $file_name ) = $args;
 
 		if ( empty ( $file_name ) || ! file_exists( $file_name ) ) {
-			\WP_CLI::warning( __( 'You must specify a valid file.', 'toolset-cli' ) );
+			\WP_CLI::warning( __('You must specify a valid file.', 'toolset-cli') );
 
 			return;
 		}
@@ -60,21 +60,21 @@ class Import extends ToolsetCommand {
 		$defaults = array(
 			'post_type' => 'post',
 		);
-		$assoc_args = wp_parse_args( $assoc_args, $defaults );
+		$assoc_args = wp_parse_args($assoc_args, $defaults);
 
 		if ( ! post_type_exists( $assoc_args['post_type'] ) ) {
-			\WP_CLI::error( sprintf( __( '%s post type does not exist.', 'toolset-cli' ), $assoc_args['post_type'] ) );
+			\WP_CLI::error( sprintf(__('%s post type does not exist.', 'toolset-cli'), $assoc_args['post_type']) );
 		}
 
 		$file_handle = $this->read_file( $file_name );
 		$headers_array = $this->parse_headers( $file_handle );
-		$import_data = $this->parse_data( $file_handle, $headers_array );
-		$data_is_stored = $this->store_data( $headers_array, $import_data, $assoc_args['post_type'] );
+		$import_data = $this->parse_data($file_handle, $headers_array);
+		$data_is_stored = $this->store_data($headers_array, $import_data, $assoc_args['post_type']);
 
 		if ( $data_is_stored ) {
-			\WP_CLI::success( __( 'The file was imported successfully.', 'toolset-cli' ) );
+			\WP_CLI::success( __('The file was imported successfully.', 'toolset-cli') );
 		} else {
-			\WP_CLI::error( __( 'An error occured while importing the file.', 'toolset-cli' ) );
+			\WP_CLI::error( __('An error occured while importing the file.', 'toolset-cli') );
 		}
 	}
 
@@ -88,14 +88,14 @@ class Import extends ToolsetCommand {
 	private function read_file( $file_name ) {
 		$file_handle = null;
 
-		ini_set( "auto_detect_line_endings", "1" );
+		ini_set("auto_detect_line_endings", "1");
 
 		if ( ! file_exists( $file_name ) ) {
-			\WP_CLI::error( sprintf( __( '%s file does not exist.', 'toolset-cli' ), $this->file ) );
+			\WP_CLI::error( sprintf(__('%s file does not exist.', 'toolset-cli'), $this->file) );
 		}
 
-		if ( ! $file_handle = fopen( $file_name, 'r' ) ) {
-			\WP_CLI::error( sprintf( __( '%s file cannot be accessed, please check the permissions.', 'toolset-cli' ), $this->file ) );
+		if ( ! $file_handle = fopen($file_name, 'r') ) {
+			\WP_CLI::error( sprintf(__('%s file cannot be accessed, please check the permissions.', 'toolset-cli'), $this->file) );
 		}
 
 		return $file_handle;
@@ -148,24 +148,24 @@ class Import extends ToolsetCommand {
 		$headers_array = array();
 
 		if ( ! $header_line = fgetcsv( $file_handle ) ) {
-			\WP_CLI::error( __( 'The file has invalid format.', 'toolset-cli' ) );
+			\WP_CLI::error( __('The file has invalid format.', 'toolset-cli') );
 		}
 
 		if ( ! is_array( $header_line ) || empty( $header_line ) || ! isset( $header_line[0] ) ) {
-			\WP_CLI::error( __( 'The file has invalid format.', 'toolset-cli' ) );
+			\WP_CLI::error( __('The file has invalid format.', 'toolset-cli') );
 		}
 
-		$headers = explode( $this->delimiter, $header_line[0] );
+		$headers = explode($this->delimiter, $header_line[0]);
 
 		foreach ( $headers as $header ) {
-			$header_parts = explode( $this->header_delimiter, $header );
+			$header_parts = explode($this->header_delimiter, $header);
 
-			if ( ! isset( $header_parts[0] ) || ! in_array( $header_parts[0], $this->supported_types ) ) {
-				\WP_CLI::error( sprintf( __( '%s is not supported in file header.', 'toolset-cli' ), $header_parts[0] ) );
+			if ( ! isset( $header_parts[0] ) || ! in_array($header_parts[0], $this->supported_types) ) {
+				\WP_CLI::error( sprintf(__('%s is not supported in file header.', 'toolset-cli'), $header_parts[0]) );
 			}
 
 			if ( $header_parts[0] == 'taxonomy' && ! taxonomy_exists( $header_parts[1] ) ) {
-				\WP_CLI::error( sprintf( __( '%s is not a registered taxonomy.', 'toolset-cli' ), $header_parts[1] ) );
+				\WP_CLI::error( sprintf(__('%s is not a registered taxonomy.', 'toolset-cli'), $header_parts[1]) );
 			}
 
 			$headers_array[] = array(
@@ -190,7 +190,7 @@ class Import extends ToolsetCommand {
 		$rows_counter = 0;
 
 		while ( ( $row = fgetcsv( $file_handle ) ) !== false ) {
-			$data = explode( $this->delimiter, $row[0] );
+			$data = explode($this->delimiter, $row[0]);
 			foreach ( $headers_array as $header_key => $header_value ) {
 				$import_data[ $rows_counter ][ $header_key ] = $data[ $header_key ];
 			}
@@ -200,7 +200,7 @@ class Import extends ToolsetCommand {
 		fclose( $file_handle );
 
 		if ( $rows_counter == 0 ) {
-			\WP_CLI::error( sprintf( 'File has no entries.', 'toolset-cli' ) );
+			\WP_CLI::error( sprintf('File has no entries.', 'toolset-cli') );
 		}
 
 		return $import_data;
@@ -226,17 +226,17 @@ class Import extends ToolsetCommand {
 						'post_type' => $post_type,
 						'post_status' => 'publish',
 					) ) ) {
-						\WP_CLI::warning( sprintf( __( 'Could not create post %s.', 'toolset-cli' ), $entry_value ) );
+						\WP_CLI::warning( sprintf(__('Could not create post %s.', 'toolset-cli'), $entry_value) );
 						continue;
 					}
 				}
 
 				if ( isset( $post_id ) && $headers_array[ $entry_key ]['type'] == 'meta' ) {
-					update_post_meta( $post_id, $headers_array[ $entry_key ]['value'], $entry_value );
+					update_post_meta($post_id, $headers_array[ $entry_key ]['value'], $entry_value);
 				}
 
 				if ( isset( $post_id ) && $headers_array[ $entry_key ]['type'] == 'taxonomy' ) {
-					wp_set_object_terms( $post_id, $entry_value, $headers_array[ $entry_key ]['value'] );
+					wp_set_object_terms($post_id, $entry_value, $headers_array[ $entry_key ]['value']);
 				}
 			}
 		}

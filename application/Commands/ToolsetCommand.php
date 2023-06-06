@@ -30,7 +30,7 @@ abstract class ToolsetCommand extends \WP_CLI_Command {
 
 	protected function get_subcommand( $parameters, $accepted_commands ) {
 		foreach ( $accepted_commands as $command ) {
-			if ( array_key_exists( $command, $parameters ) ) {
+			if ( array_key_exists($command, $parameters) ) {
 				return $command;
 			}
 		}
@@ -47,7 +47,7 @@ abstract class ToolsetCommand extends \WP_CLI_Command {
 	protected function toolset_dic_make( $class_name ) {
 		if ( ! function_exists( '\toolset_dic' ) ) {
 			$this->wp_cli()
-				->warning( __( 'You\'re dealing with a very old version of Toolset. Things probably won\'t work as expected.', 'toolset-cli' ) );
+				->warning( __('You\'re dealing with a very old version of Toolset. Things probably won\'t work as expected.', 'toolset-cli') );
 
 			return null;
 		}
@@ -56,7 +56,7 @@ abstract class ToolsetCommand extends \WP_CLI_Command {
 		try {
 			return $dic->make( $class_name );
 		} catch ( InjectionException $e ) {
-			$this->wp_cli()->warning( sprintf( __( 'Unable to instantiate class "%s"', 'toolset-cli' ), $class_name ) );
+			$this->wp_cli()->warning( sprintf(__('Unable to instantiate class "%s"', 'toolset-cli'), $class_name) );
 			return null;
 		}
 	}

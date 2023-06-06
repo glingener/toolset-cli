@@ -51,12 +51,12 @@ class FieldGroup extends TypesCommand {
 			'domain' => 'all',
 			'status' => 'public',
 		];
-		$assoc_args = wp_parse_args( $assoc_args, $defaults );
+		$assoc_args = wp_parse_args($assoc_args, $defaults);
 
 		$return_ids = $assoc_args['format'] === 'ids';
-		$items = $this->get_items( $assoc_args['domain'], $assoc_args['status'], $return_ids );
+		$items = $this->get_items($assoc_args['domain'], $assoc_args['status'], $return_ids);
 
-		format_items( $assoc_args['format'], $items, $this->get_columns() );
+		format_items($assoc_args['format'], $items, $this->get_columns());
 	}
 
 
@@ -80,7 +80,7 @@ class FieldGroup extends TypesCommand {
 			$args['is_active'] = $status === 'public';
 		}
 
-		$item_groups = apply_filters( 'types_query_groups', [], $args );
+		$item_groups = apply_filters('types_query_groups', [], $args);
 
 		if ( is_numeric( array_keys( $item_groups )[0] ) ) {
 			$item_groups[] = $item_groups;
@@ -96,8 +96,8 @@ class FieldGroup extends TypesCommand {
 						'id' => $item->get_id(),
 						'post_title' => $item->get_name(),
 						'slug' => $item->get_slug(),
-						'post_status' => $item->is_active() ? __( 'active', 'toolset-cli' )
-							: __( 'inactive', 'toolset-cli' ),
+						'post_status' => $item->is_active() ? __('active', 'toolset-cli')
+							: __('inactive', 'toolset-cli'),
 						'domain' => get_domain_from_post_type( $item->get_post_type() ),
 					];
 				}
@@ -165,17 +165,14 @@ class FieldGroup extends TypesCommand {
 			'domain' => 'posts',
 			'status' => true,
 		];
-		$field_group_args = wp_parse_args( $assoc_args, $defaults );
+		$field_group_args = wp_parse_args($assoc_args, $defaults);
 
-		$field_group = $this->create_item(
-			$field_group_args['domain'], $field_group_args['name'], $field_group_args['title'], $field_group_args['status'],
-			array_key_exists( 'description', $field_group_args ) ? $field_group_args['description'] : ''
-		);
+		$field_group = $this->create_item($field_group_args['domain'], $field_group_args['name'], $field_group_args['title'], $field_group_args['status'], array_key_exists('description', $field_group_args) ? $field_group_args['description'] : '');
 
 		if ( $field_group ) {
-			WP_CLI::success( __( 'Created field group.', 'toolset-cli' ) );
+			WP_CLI::success( __('Created field group.', 'toolset-cli') );
 		} else {
-			WP_CLI::error( __( 'Could not create field group.', 'toolset-cli' ) );
+			WP_CLI::error( __('Could not create field group.', 'toolset-cli') );
 		}
 	}
 
@@ -209,9 +206,9 @@ class FieldGroup extends TypesCommand {
 			'count' => 10,
 			'domain' => 'posts',
 		];
-		$assoc_args = wp_parse_args( $assoc_args, $defaults );
+		$assoc_args = wp_parse_args($assoc_args, $defaults);
 
-		$progress = make_progress_bar( __( 'Generating field groups', 'toolset-cli' ), $assoc_args['count'] );
+		$progress = make_progress_bar(__('Generating field groups', 'toolset-cli'), $assoc_args['count']);
 		for ( $i = 0; $i < $assoc_args['count']; $i ++ ) {
 			$this->create_item( $assoc_args['domain'] );
 			$progress->tick();
@@ -240,7 +237,7 @@ class FieldGroup extends TypesCommand {
 			$title = $name;
 		}
 
-		$group_id = apply_filters( 'types_create_field_group', null, $domain, $name, $title, $is_active );
+		$group_id = apply_filters('types_create_field_group', null, $domain, $name, $title, $is_active);
 
 		if ( $group_id ) {
 			wp_update_post( [
@@ -271,14 +268,14 @@ class FieldGroup extends TypesCommand {
 	public function empty_items( $args, $assoc_args ) {
 		$items = $this->get_items();
 		if ( ! empty( $items ) ) {
-			$progress = make_progress_bar( __( 'Deleting field groups', 'toolset-cli' ), count( $items ) );
+			$progress = make_progress_bar(__('Deleting field groups', 'toolset-cli'), count( $items ));
 			foreach ( $items as $item ) {
-				$this->delete_item( $item['id'], true );
+				$this->delete_item($item['id'], true);
 				$progress->tick();
 			}
 			$progress->finish();
 		} else {
-			WP_CLI::warning( __( 'There are no field groups to delete.', 'toolset-cli' ) );
+			WP_CLI::warning( __('There are no field groups to delete.', 'toolset-cli') );
 		}
 	}
 
@@ -312,7 +309,7 @@ class FieldGroup extends TypesCommand {
 		list( $id ) = $args;
 
 		if ( empty( $id ) ) {
-			WP_CLI::warning( __( 'You must specify a field group ID.', 'toolset-cli' ) );
+			WP_CLI::warning( __('You must specify a field group ID.', 'toolset-cli') );
 
 			return;
 		}
@@ -320,14 +317,14 @@ class FieldGroup extends TypesCommand {
 		$defaults = [
 			'force' => false,
 		];
-		$assoc_args = wp_parse_args( $assoc_args, $defaults );
+		$assoc_args = wp_parse_args($assoc_args, $defaults);
 
-		$delete_result = $this->delete_item( $id, $assoc_args['force'] );
+		$delete_result = $this->delete_item($id, $assoc_args['force']);
 
 		if ( $delete_result ) {
-			WP_CLI::success( __( 'Deleted field group.', 'toolset-cli' ) );
+			WP_CLI::success( __('Deleted field group.', 'toolset-cli') );
 		} else {
-			WP_CLI::error( __( 'Could not delete field group.', 'toolset-cli' ) );
+			WP_CLI::error( __('Could not delete field group.', 'toolset-cli') );
 		}
 
 	}
@@ -342,7 +339,7 @@ class FieldGroup extends TypesCommand {
 	 * @return mixed The post object if deleted successfully, or false on failure.
 	 */
 	protected function delete_item( $id, $force = false ) {
-		return wp_delete_post( $id, $force );
+		return wp_delete_post($id, $force);
 	}
 
 
@@ -366,30 +363,30 @@ class FieldGroup extends TypesCommand {
 	 * @noinspection PhpUnusedParameterInspection
 	 */
 	public function add_field( $args, $parameters ) {
-		if ( ! in_array( $parameters['domain'], Toolset_Element_Domain::all(), true ) ) {
-			$this->wp_cli()->error( __( 'Invalid or missing element domain.', 'toolset-cli' ) );
+		if ( ! in_array($parameters['domain'], Toolset_Element_Domain::all(), true) ) {
+			$this->wp_cli()->error( __('Invalid or missing element domain.', 'toolset-cli') );
 			return;
 		}
 
 		$group_factory = Toolset_Field_Group_Factory::get_factory_by_domain( $parameters['domain'] );
 		$field_group = $group_factory->load_field_group( $parameters['group_slug'] );
 		if ( ! $field_group ) {
-			$this->wp_cli()->error( __( 'Invalid custom field group slug.', 'toolset-cli' ) );
+			$this->wp_cli()->error( __('Invalid custom field group slug.', 'toolset-cli') );
 			return;
 		}
 
 		$field_definition_factory = Toolset_Field_Definition_Factory::get_factory_by_domain( $parameters['domain'] );
 		$field_definition = $field_definition_factory->load_field_definition( $parameters['field_slug'] );
 		if ( ! $field_definition ) {
-			$this->wp_cli()->error( __( 'Invalid custom field definition.', 'toolset-cli' ) );
+			$this->wp_cli()->error( __('Invalid custom field definition.', 'toolset-cli') );
 			return;
 		}
 
 		$is_success = $field_group->add_field_definition( $field_definition );
 		if ( $is_success ) {
-			$this->wp_cli()->success( __( 'Custom field added to the field group.', 'toolset-cli' ) );
+			$this->wp_cli()->success( __('Custom field added to the field group.', 'toolset-cli') );
 		} else {
-			$this->wp_cli()->error( __( 'Toolset reports an error when trying to add the custom field to the field group.', 'toolset-cli' ) );
+			$this->wp_cli()->error( __('Toolset reports an error when trying to add the custom field to the field group.', 'toolset-cli') );
 		}
 	}
 
@@ -431,58 +428,52 @@ class FieldGroup extends TypesCommand {
 	 */
 	public function set_display_conditions( $args, $parameters ) {
 		if ( Toolset_Element_Domain::POSTS !== $parameters['domain'] ) {
-			$this->wp_cli()->error( __( 'Only post field groups are supported at the moment.', 'toolset-cli' ) );
+			$this->wp_cli()->error( __('Only post field groups are supported at the moment.', 'toolset-cli') );
 			return;
 		}
 
 		$group_factory = Toolset_Field_Group_Factory::get_factory_by_domain( $parameters['domain'] );
 		$field_group = $group_factory->load_field_group( $parameters['group_slug'] );
 		if ( ! $field_group ) {
-			$this->wp_cli()->error( __( 'Invalid custom field group slug.', 'toolset-cli' ) );
+			$this->wp_cli()->error( __('Invalid custom field group slug.', 'toolset-cli') );
 			return;
 		}
 
-		if ( array_key_exists( 'operator', $parameters ) ) {
+		if ( array_key_exists('operator', $parameters) ) {
 			$operator = $parameters['operator'] === 'AND' ? 'all' : 'any';
-			update_post_meta( $field_group->get_id(), Toolset_Field_Group_Post::POSTMETA_FILTER_OPERATOR, $operator );
-			$this->wp_cli()->log( __( 'Comparison operator updated.', 'toolset-cli' ) );
+			update_post_meta($field_group->get_id(), Toolset_Field_Group_Post::POSTMETA_FILTER_OPERATOR, $operator);
+			$this->wp_cli()->log( __('Comparison operator updated.', 'toolset-cli') );
 		}
 
-		if ( array_key_exists( 'post_types', $parameters ) ) {
-			$post_types = implode( ',', array_map( 'trim', explode( ',', $parameters['post_types'] ) ) );
-			update_post_meta( $field_group->get_id(), Toolset_Field_Group_Post::POSTMETA_POST_TYPE_LIST, $post_types );
-			$this->wp_cli()->log( __( 'Display condition by post types set.', 'toolset-cli' ) );
+		if ( array_key_exists('post_types', $parameters) ) {
+			$post_types = implode(',', array_map('trim', explode(',', $parameters['post_types'])));
+			update_post_meta($field_group->get_id(), Toolset_Field_Group_Post::POSTMETA_POST_TYPE_LIST, $post_types);
+			$this->wp_cli()->log( __('Display condition by post types set.', 'toolset-cli') );
 		}
 
-		if ( array_key_exists( 'terms', $parameters ) ) {
-			if ( ! array_key_exists( 'taxonomy', $parameters ) ) {
-				$this->wp_cli()->error( __( 'The --taxonomy parameter is mandatory when using --terms.', 'toolset-cli' ) );
+		if ( array_key_exists('terms', $parameters) ) {
+			if ( ! array_key_exists('taxonomy', $parameters) ) {
+				$this->wp_cli()->error( __('The --taxonomy parameter is mandatory when using --terms.', 'toolset-cli') );
 				return;
 			}
 			$term_ids = [];
-			foreach ( explode( ',', $parameters['terms'] ) as $term_slug ) {
-				$term = get_term_by( 'slug', $term_slug, $parameters['taxonomy'] );
+			foreach ( explode(',', $parameters['terms']) as $term_slug ) {
+				$term = get_term_by('slug', $term_slug, $parameters['taxonomy']);
 				if ( ! $term ) {
-					$this->wp_cli()->error( sprintf(
-						__( 'Term %s not found, cannot use it as a display condition.', 'toolset-cli' ), $term_slug
-					) );
+					$this->wp_cli()->error( sprintf(__('Term %s not found, cannot use it as a display condition.', 'toolset-cli'), $term_slug) );
 					return;
 				}
 				$term_ids[] = $term->term_taxonomy_id;
 			}
-			update_post_meta(
-				$field_group->get_id(),
-				Toolset_Field_Group_Post::POSTMETA_TERM_LIST,
-				implode( ',', $term_ids )
-			);
-			$this->wp_cli()->log( __( 'Display condition by post types set.', 'toolset-cli' ) );
+			update_post_meta($field_group->get_id(), Toolset_Field_Group_Post::POSTMETA_TERM_LIST, implode(',', $term_ids));
+			$this->wp_cli()->log( __('Display condition by post types set.', 'toolset-cli') );
 		}
 
-		if ( array_key_exists( 'template', $parameters ) ) {
-			update_post_meta( $field_group->get_id(), Toolset_Field_Group_Post::POSTMETA_TEMPLATE_LIST, $parameters['template'] );
-			$this->wp_cli()->log( __( 'Display condition by page template.', 'toolset-cli' ) );
+		if ( array_key_exists('template', $parameters) ) {
+			update_post_meta($field_group->get_id(), Toolset_Field_Group_Post::POSTMETA_TEMPLATE_LIST, $parameters['template']);
+			$this->wp_cli()->log( __('Display condition by page template.', 'toolset-cli') );
 		}
 
-		$this->wp_cli()->success( __( 'Display condition setup completed.', 'toolset-cli' ) );
+		$this->wp_cli()->success( __('Display condition setup completed.', 'toolset-cli') );
 	}
 }

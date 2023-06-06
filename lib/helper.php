@@ -14,7 +14,7 @@ function get_random_string( $length = 10 ) {
 	$characters_length = strlen( $characters );
 	$random_string = '';
 	for ( $i = 0; $i < $length; $i ++ ) {
-		$random_string .= $characters[ wp_rand( 0, $characters_length - 1 ) ];
+		$random_string .= $characters[ wp_rand(0, $characters_length - 1) ];
 	}
 
 	return $random_string;
@@ -29,9 +29,9 @@ function get_random_string( $length = 10 ) {
  */
 function get_domain_from_post_type( $post_type ) {
 	$domains = array(
-		'wp-types-group' => __( 'Posts', 'toolset-cli' ),
-		'wp-types-user-group' => __( 'Users', 'toolset-cli' ),
-		'wp-types-term-group' => __( 'Terms', 'toolset-cli' ),
+		'wp-types-group' => __('Posts', 'toolset-cli'),
+		'wp-types-user-group' => __('Users', 'toolset-cli'),
+		'wp-types-term-group' => __('Terms', 'toolset-cli'),
 	);
 
 	return $domains[ $post_type ];
